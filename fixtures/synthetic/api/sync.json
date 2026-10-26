@@ -1,0 +1,16 @@
+{
+  "state": "running",
+  "scope": "missing",
+  "needed": true,
+  "neededReason": "new_dlc",
+  "suggestedScope": "missing",
+  "canStart": true,
+  "done": 312,
+  "total": 1033,
+  "current": "building: SynthWidget",
+  "errors": 0,
+  "fonts": "none",
+  "startedAt": "2026-01-01T12:00:00Z",
+  "updatedAt": "2026-01-01T12:00:41Z",
+  "elapsedMs": 41250
+}

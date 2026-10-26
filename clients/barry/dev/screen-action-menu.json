@@ -1,0 +1,1 @@
+{"schema":1,"title":"Action menu","blocks":[{"type":"list","items":[{"title":"Zoom to menu","actions":[{"id":"focus","label":"Show in game","args":{"target":{"kind":"dupe","id":"menu"},"select":true}}]}]}]}

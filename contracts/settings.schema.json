@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "settings.schema.json",
+  "title": "ONI Companion settings.json (v1.1)",
+  "description": "Written by the core to settings.json in its data folder (the app's data folder in Barry) with write-tmp-then-rename. Missing file or missing keys mean the defaults. Unknown keys are kept by the core and ignored.",
+  "type": "object",
+  "required": ["schema"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "zoomToDupeOnSelect": { "type": "boolean", "description": "Default false. On: opening a duplicant page from the Colony tab also sends one focus command (the page Screen then carries onOpen). Off: only the Show in game button zooms." }
+  }
+}

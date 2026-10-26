@@ -1,0 +1,253 @@
+{
+  "schema": 1,
+  "title": "Actions",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "pad",
+    "gamedata",
+    "status"
+  ],
+  "blocks": [
+    {
+      "type": "grid",
+      "title": "Overlays",
+      "cards": [
+        {
+          "title": "Oxygen Overlay",
+          "subtitle": "F1",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Oxygen Overlay",
+              "args": {
+                "mode": "None"
+              },
+              "active": true
+            }
+          ]
+        },
+        {
+          "title": "Power Overlay",
+          "subtitle": "F2",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Power Overlay",
+              "args": {
+                "mode": "SynthPower"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Radiation Overlay",
+          "subtitle": "F3",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Radiation Overlay",
+              "args": {
+                "mode": "SynthRadiation"
+              },
+              "enabled": false,
+              "reason": "Needs Synth Beta Pack."
+            }
+          ]
+        }
+      ],
+      "variant": "pad"
+    },
+    {
+      "type": "grid",
+      "title": "Priority",
+      "cards": [
+        {
+          "title": "1",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 1",
+              "args": {
+                "priority": 1
+              }
+            }
+          ]
+        },
+        {
+          "title": "2",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 2",
+              "args": {
+                "priority": 2
+              }
+            }
+          ]
+        },
+        {
+          "title": "3",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 3",
+              "args": {
+                "priority": 3
+              }
+            }
+          ]
+        },
+        {
+          "title": "4",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 4",
+              "args": {
+                "priority": 4
+              }
+            }
+          ]
+        },
+        {
+          "title": "5",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 5",
+              "args": {
+                "priority": 5
+              },
+              "active": true
+            }
+          ]
+        },
+        {
+          "title": "6",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 6",
+              "args": {
+                "priority": 6
+              }
+            }
+          ]
+        },
+        {
+          "title": "7",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 7",
+              "args": {
+                "priority": 7
+              }
+            }
+          ]
+        },
+        {
+          "title": "8",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 8",
+              "args": {
+                "priority": 8
+              }
+            }
+          ]
+        },
+        {
+          "title": "9",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 9",
+              "args": {
+                "priority": 9
+              }
+            }
+          ]
+        },
+        {
+          "title": "!",
+          "subtitle": "Emergency",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Emergency",
+              "args": {
+                "priority": "emergency"
+              }
+            }
+          ]
+        }
+      ],
+      "variant": "priority"
+    },
+    {
+      "type": "grid",
+      "title": "Tools",
+      "cards": [
+        {
+          "title": "Dig",
+          "subtitle": "G",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Dig",
+              "args": {
+                "tool": "SynthDig"
+              },
+              "active": true
+            }
+          ]
+        },
+        {
+          "title": "Cancel",
+          "subtitle": "Z",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Cancel",
+              "args": {
+                "tool": "SynthCancel"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Mop",
+          "subtitle": "M",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Mop",
+              "args": {
+                "tool": "SynthMop"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Harvest",
+          "subtitle": "H",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Harvest",
+              "args": {
+                "tool": "SynthHarvest"
+              },
+              "enabled": false,
+              "reason": "Needs Synth Beta Pack."
+            }
+          ]
+        }
+      ],
+      "variant": "pad"
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "title": "Widget Maker",
+  "subtitle": "Building",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "nav": {
+    "back": "home"
+  },
+  "refreshOn": [
+    "gamedata",
+    "build",
+    "colony"
+  ],
+  "blocks": [
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "Base game",
+          "style": "dlc"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "Made-up."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "Makes widgets."
+        }
+      ]
+    },
+    {
+      "type": "picker",
+      "title": "Build with",
+      "slots": [
+        {
+          "label": "Metal",
+          "needKg": 200,
+          "options": [
+            {
+              "id": "SynthMetalA",
+              "name": "Metal A",
+              "needKg": 200,
+              "haveKg": 1240,
+              "enabled": true,
+              "selected": true
+            },
+            {
+              "id": "SynthMetalB",
+              "name": "Metal B",
+              "needKg": 200,
+              "haveKg": 80,
+              "enabled": false,
+              "selected": false
+            },
+            {
+              "id": "SynthMetalC",
+              "name": "Metal C",
+              "needKg": 200,
+              "haveKg": 0,
+              "enabled": false,
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "action": {
+        "id": "build_select",
+        "label": "Build",
+        "args": {
+          "buildingId": "SynthWidgetMaker"
+        },
+        "enabled": false,
+        "reason": "Needs research: Widgetry"
+      }
+    },
+    {
+      "type": "stats",
+      "title": "Basics",
+      "rows": [
+        {
+          "label": "Build menu",
+          "value": "Refinement"
+        },
+        {
+          "label": "Size",
+          "value": "3 x 2",
+          "unit": "tiles"
+        },
+        {
+          "label": "Hit points",
+          "value": 100
+        },
+        {
+          "label": "Build time",
+          "value": 30,
+          "unit": "s"
+        },
+        {
+          "label": "Decor",
+          "value": "-10",
+          "hint": "Radius 2 tiles"
+        },
+        {
+          "label": "Noise",
+          "value": "+45",
+          "hint": "Radius 4 tiles"
+        },
+        {
+          "label": "Power use",
+          "value": 120,
+          "unit": "W",
+          "hint": "While running"
+        },
+        {
+          "label": "Heat to the air",
+          "value": 0.5,
+          "unit": "kDTU/s"
+        },
+        {
+          "label": "Self heat",
+          "value": 1,
+          "unit": "kDTU/s"
+        },
+        {
+          "label": "Overheats at",
+          "value": 75,
+          "unit": "C"
+        }
+      ]
+    },
+    {
+      "type": "ports",
+      "title": "Flow",
+      "inputs": [
+        {
+          "label": "Widgetium",
+          "element": {
+            "kind": "element",
+            "id": "SynthWidgetium"
+          },
+          "rate": 500,
+          "unit": "g/s"
+        },
+        {
+          "label": "Solid in",
+          "unit": "g/s",
+          "conduit": "solid"
+        },
+        {
+          "label": "Power in",
+          "rate": 120,
+          "unit": "W",
+          "conduit": "power",
+          "note": "Max rate"
+        }
+      ],
+      "outputs": [
+        {
+          "label": "Widget Gas",
+          "element": {
+            "kind": "element",
+            "id": "SynthGas"
+          },
+          "rate": 100,
+          "unit": "g/s",
+          "note": "At 40 C"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Research",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "tech",
+                "id": "SynthWidgetry"
+              },
+              "title": "Widgetry",
+              "subtitle": "15 Basic Research"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Makes",
+      "collapsed": true,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "recipe",
+                "id": "SynthRecipeBar"
+              },
+              "title": "Synth Bar"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Open on the ONI wiki",
+      "url": "https://oxygennotincluded.wiki.gg/wiki/Widget_Maker"
+    }
+  ]
+}

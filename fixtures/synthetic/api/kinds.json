@@ -1,0 +1,19 @@
+{
+  "kinds": [
+    {
+      "kind": "building",
+      "label": "Buildings",
+      "count": 2
+    },
+    {
+      "kind": "element",
+      "label": "Elements",
+      "count": 3
+    },
+    {
+      "kind": "critter",
+      "label": "Critters",
+      "count": 1
+    }
+  ]
+}

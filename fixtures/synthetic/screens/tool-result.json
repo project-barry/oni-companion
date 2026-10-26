@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "title": "Heat",
+  "nav": {
+    "back": "home"
+  },
+  "blocks": [
+    {
+      "type": "stats",
+      "title": "Result",
+      "rows": [
+        {
+          "label": "Energy",
+          "value": 600,
+          "unit": "kDTU"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "columns": [
+        "Step",
+        "Energy"
+      ],
+      "rows": [
+        [
+          "Warm up",
+          400
+        ],
+        [
+          {
+            "text": "Widgetium",
+            "ref": {
+              "kind": "element",
+              "id": "SynthWidgetium"
+            }
+          },
+          {
+            "text": "200",
+            "tone": "good"
+          }
+        ]
+      ]
+    }
+  ]
+}

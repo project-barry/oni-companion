@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "source": "game",
+  "build": 100001,
+  "colors": {
+    "background": "#10151c",
+    "panel": "#1e2430",
+    "header": "#323c50",
+    "border": "#505a6e",
+    "buttonNormal": "#3c4659",
+    "buttonHover": "#4b556e",
+    "buttonPressed": "#283040",
+    "text": "#e6e9ef",
+    "textDim": "#98a2b3",
+    "textTitle": "#ffffff",
+    "positive": "#4cc38a",
+    "negative": "#ef5b5b",
+    "warning": "#e8b44a",
+    "info": "#5aa9ff",
+    "progressFill": "#4cc38a",
+    "progressTrack": "#283040",
+    "meterStress": "#e8b44a",
+    "meterHealth": "#ef5b5b",
+    "meterCalories": "#5aa9ff",
+    "sectionHeader": "#3c4659",
+    "sectionHeaderText": "#ffffff",
+    "tabBg": "#4b556e",
+    "tabActiveBg": "#1e2430",
+    "tabText": "#e6e9ef",
+    "tabTextActive": "#e6e9ef",
+    "alertBg": "#3c4659CC",
+    "alertText": "#ffffff",
+    "alertBadBg": "#3c4659CC",
+    "alertBadText": "#F48C8C"
+  },
+  "font": {
+    "family": "Noto Sans"
+  },
+  "slices": [
+    {
+      "name": "panel",
+      "art": "/api/v1/art/ui/panel",
+      "width": 48,
+      "height": 48,
+      "insets": {
+        "left": 6,
+        "top": 6,
+        "right": 6,
+        "bottom": 6
+      }
+    },
+    {
+      "name": "header",
+      "art": "/api/v1/art/ui/header",
+      "width": 48,
+      "height": 24,
+      "insets": {
+        "left": 4,
+        "top": 4,
+        "right": 4,
+        "bottom": 4
+      }
+    },
+    {
+      "name": "button",
+      "art": "/api/v1/art/ui/button",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    },
+    {
+      "name": "buttonHover",
+      "art": "/api/v1/art/ui/buttonHover",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    },
+    {
+      "name": "buttonPressed",
+      "art": "/api/v1/art/ui/buttonPressed",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    }
+  ]
+}

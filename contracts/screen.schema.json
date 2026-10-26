@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "screen.schema.json",
+  "title": "ONI Companion Screen (v1, additions in v1.1)",
+  "description": "FROZEN. One page of content. All text, order and numbers are decided by the core; the front end only renders `blocks` top to bottom and navigates Refs.",
+  "type": "object",
+  "required": ["schema", "title", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "subtitle": { "type": "string" },
+    "source": {
+      "description": "Where the numbers came from. mod-live/save/header for colony data; mod-export/yaml for game data; none when empty.",
+      "enum": ["mod-live", "save", "header", "mod-export", "yaml", "none"]
+    },
+    "asOf": { "type": "string", "format": "date-time", "description": "UTC, e.g. 2026-10-25T14:03:11Z" },
+    "nav": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "back": { "description": "Where Back goes if the client has no history. A Ref, or the string \"home\".",
+          "oneOf": [ { "$ref": "blocks.schema.json#/$defs/Ref" }, { "const": "home" } ] }
+      }
+    },
+    "refreshOn": {
+      "description": "Re-fetch this Screen when /events reports one of these.",
+      "type": "array", "uniqueItems": true, "items": { "enum": ["colony", "gamedata", "settings", "action", "status", "pad", "build"] }
+    },
+    "onOpen": {
+      "description": "v1.1. Actions the front end runs once, when the page is opened by the user. Not again on refresh, on Back, or when the page is re-fetched after an event. Only the core decides whether this is present (e.g. the setting 'zoom to duplicant when selected').",
+      "type": "array", "items": { "type": "object", "required": ["action"], "additionalProperties": false,
+        "properties": { "action": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" }, "args": { "type": "object" } } }
+    },
+    "filter": {
+      "description": "v1.1. Show a text field. The front end hides list items and grid cards whose title does not contain the text (case-insensitive) and re-fetches nothing.",
+      "type": "object", "required": ["placeholder"], "additionalProperties": false,
+      "properties": { "placeholder": { "type": "string" } }
+    },
+    "worldSwitcher": {
+      "description": "v1.1. Show a world picker. Choosing a world re-fetches this same URL with ?world=<id>.",
+      "type": "object", "required": ["active", "worlds"], "additionalProperties": false,
+      "properties": {
+        "active": { "type": "integer", "minimum": 0 },
+        "worlds": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["id", "name"], "additionalProperties": false,
+          "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" } } } }
+      }
+    },
+    "raw": { "type": "object", "description": "Only on GET /colony (see api.schema.json ColonyReply). Other endpoints leave it out." },
+    "blocks": { "type": "array", "items": { "$ref": "blocks.schema.json#/$defs/Block" } }
+  }
+}

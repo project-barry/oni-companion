@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "source": "builtin",
+  "colors": {
+    "background": "#0e1218",
+    "panel": "#18202a",
+    "header": "#222c39",
+    "border": "#2c3846",
+    "buttonNormal": "#222c39",
+    "buttonHover": "#2c3846",
+    "buttonPressed": "#18202a",
+    "text": "#eef0f4",
+    "textDim": "#9aa4b5",
+    "textTitle": "#eef0f4",
+    "positive": "#4cc38a",
+    "negative": "#ef5b5b",
+    "warning": "#e8b44a",
+    "info": "#5aa9ff",
+    "progressFill": "#4cc38a",
+    "progressTrack": "#2c3846",
+    "meterStress": "#e8b44a",
+    "meterHealth": "#ef5b5b",
+    "meterCalories": "#5aa9ff",
+    "sectionHeader": "#222c39",
+    "sectionHeaderText": "#eef0f4",
+    "tabBg": "#18202a",
+    "tabActiveBg": "#222c39",
+    "tabText": "#9aa4b5",
+    "tabTextActive": "#eef0f4",
+    "alertBg": "#18202a",
+    "alertText": "#eef0f4",
+    "alertBadBg": "#18202a",
+    "alertBadText": "#ef5b5b"
+  },
+  "font": {
+    "family": "Noto Sans"
+  },
+  "slices": []
+}

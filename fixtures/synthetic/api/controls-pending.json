@@ -1,0 +1,11 @@
+{
+  "available": true,
+  "paused": false,
+  "speed": 1,
+  "pending": {
+    "state": "play",
+    "speed": 3,
+    "seq": 11
+  },
+  "asOf": "2026-01-01T12:00:00Z"
+}

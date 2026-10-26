@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "seq": 10,
+  "state": "failed",
+  "message": "Alert is gone",
+  "ackedAt": "2026-01-01T12:00:00Z"
+}

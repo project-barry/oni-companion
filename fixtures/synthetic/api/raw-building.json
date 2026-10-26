@@ -1,0 +1,17 @@
+{
+  "kind": "building",
+  "id": "SynthWidgetMaker",
+  "name": "Widget Maker",
+  "dlc": [],
+  "source": "mod-export",
+  "data": {
+    "id": "SynthWidgetMaker",
+    "name": "Widget Maker",
+    "dlc": [],
+    "category": "SynthCategory",
+    "size": {
+      "w": 3,
+      "h": 2
+    }
+  }
+}

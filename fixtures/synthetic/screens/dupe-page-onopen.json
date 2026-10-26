@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "title": "Ada",
+  "subtitle": "Dig",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony"
+  ],
+  "nav": {
+    "back": "home"
+  },
+  "onOpen": [
+    {
+      "action": "focus",
+      "args": {
+        "target": {
+          "kind": "dupe",
+          "id": "d1"
+        },
+        "select": true
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "art": "/api/v1/art/dupe/d1",
+      "caption": "Ada",
+      "size": "large"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Show in game",
+          "subtitle": "Moves the game camera once",
+          "actions": [
+            {
+              "id": "focus",
+              "label": "Show in game",
+              "args": {
+                "target": {
+                  "kind": "dupe",
+                  "id": "d1"
+                },
+                "select": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Meters",
+      "blocks": [
+        {
+          "type": "stats",
+          "rows": [
+            {
+              "label": "Stress",
+              "value": "15%",
+              "tone": "good"
+            },
+            {
+              "label": "Health",
+              "value": "100 / 100",
+              "tone": "good"
+            },
+            {
+              "label": "Calories",
+              "value": "3,200 / 4,000 kcal"
+            },
+            {
+              "label": "Breath",
+              "value": "100%"
+            },
+            {
+              "label": "Bladder",
+              "value": "10%"
+            },
+            {
+              "label": "Stamina",
+              "value": "80%"
+            },
+            {
+              "label": "Body temperature",
+              "value": "37.0 C"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Status",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "title": "Hungry",
+              "badge": "minor",
+              "tone": "warn"
+            },
+            {
+              "title": "Cozy",
+              "badge": "good",
+              "tone": "good"
+            }
+          ],
+          "empty": "Nothing wrong."
+        },
+        {
+          "type": "list",
+          "title": "Diseases",
+          "items": [],
+          "empty": "Healthy."
+        }
+      ]
+    },
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "Quick",
+          "style": "category",
+          "ref": {
+            "kind": "trait",
+            "id": "SynthQuick"
+          }
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Attributes",
+      "columns": [
+        "Attribute",
+        "Value"
+      ],
+      "rows": [
+        [
+          "Digging",
+          7
+        ],
+        [
+          "Athletics",
+          3
+        ]
+      ]
+    },
+    {
+      "type": "stats",
+      "title": "Morale",
+      "rows": [
+        {
+          "label": "Morale",
+          "value": 12,
+          "hint": "Expects 8",
+          "tone": "good"
+        }
+      ]
+    }
+  ]
+}

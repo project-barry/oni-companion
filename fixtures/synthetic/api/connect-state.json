@@ -1,0 +1,42 @@
+{
+  "enabled": true,
+  "listening": true,
+  "port": 47615,
+  "plainHttp": false,
+  "plainHttpPort": null,
+  "identity": {
+    "instanceId": "3f6c1b2e-8a4d-4c5e-9b7a-1d2e3f405162",
+    "name": "spiffy-raccoon",
+    "fingerprint": "a4cc369e78ac5d4cdffd1aedb7d96950d667720032b8e5d9588ae72866331434",
+    "fingerprintTag": "A4CC",
+    "apiVersion": 1,
+    "coreVersion": "1.4.0"
+  },
+  "addresses": [
+    {
+      "address": "192.168.1.23",
+      "kind": "lan"
+    },
+    {
+      "address": "100.64.12.7",
+      "kind": "tailscale"
+    }
+  ],
+  "code": {
+    "display": "K7M2-QX9P",
+    "expiresAt": "2026-01-01T12:05:00Z",
+    "failuresLeft": 5
+  },
+  "qrText": "{\"v\":1,\"t\":\"onic-pair\",\"a\":[\"192.168.1.23\",\"100.64.12.7\"],\"p\":47615,\"c\":\"K7M2QX9P\",\"i\":\"3f6c1b2e-8a4d-4c5e-9b7a-1d2e3f405162\",\"f\":\"a4cc369e78ac5d4cdffd1aedb7d96950d667720032b8e5d9588ae72866331434\",\"n\":\"spiffy-raccoon\",\"x\":\"2026-01-01T12:05:00Z\"}",
+  "devices": [
+    {
+      "deviceId": "d-a1b2c3d4e5f6",
+      "label": "Pixel 9",
+      "platform": "android",
+      "pairedAt": "2026-01-01T11:00:00Z",
+      "lastSeen": "2026-01-01T11:59:30Z",
+      "transport": "tls"
+    }
+  ],
+  "plainHttpNote": null
+}

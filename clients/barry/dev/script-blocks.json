@@ -1,0 +1,10 @@
+[
+ {"resize":[1240,3200]},
+ {"pushfile":"fixtures/synthetic/screens/all-blocks.json"},{"shot":"10-all-blocks"},
+ {"call":"pop"},
+ {"pushfile":"fixtures/synthetic/screens/all-ref-kinds.json"},{"shot":"11-all-ref-kinds"},
+ {"call":"pop"},
+ {"pushfile":"fixtures/synthetic/screens/entry-building.json"},{"shot":"12-entry-building"},
+ {"call":"pop"},
+ {"pushfile":"fixtures/synthetic/screens/entry-element.json"},{"shot":"13-entry-element"}
+]

@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony",
+    "action"
+  ],
+  "title": "Colony alerts",
+  "blocks": [
+    {
+      "type": "list",
+      "title": "Alerts",
+      "variant": "alerts",
+      "items": [
+        {
+          "ref": {
+            "kind": "alert",
+            "id": "a1"
+          },
+          "title": "Low air (2)",
+          "badge": "x2",
+          "tone": "bad",
+          "art": "/api/v1/art/ui/alertBad"
+        },
+        {
+          "ref": {
+            "kind": "alert",
+            "id": "a2"
+          },
+          "title": "No Research Focus",
+          "tone": "warn",
+          "art": "/api/v1/art/ui/alertMinorBad",
+          "actions": [
+            {
+              "id": "alert_activate",
+              "label": "Open in game",
+              "args": {
+                "alertId": "a2"
+              }
+            }
+          ]
+        },
+        {
+          "ref": {
+            "kind": "alert",
+            "id": "a3"
+          },
+          "title": "Synthetic reminder",
+          "tone": "info",
+          "actions": [
+            {
+              "id": "alert_dismiss",
+              "label": "Dismiss",
+              "args": {
+                "alertId": "a3"
+              },
+              "trigger": "longPress",
+              "danger": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

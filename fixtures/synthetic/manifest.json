@@ -1,0 +1,575 @@
+{
+  "description": "Every synthetic fixture and the schema it must validate against. 'endpoint' marks the reply fixture of an api.md endpoint. 'request' fixtures are request bodies.",
+  "fixtures": [
+    {
+      "path": "api/status.json",
+      "schema": "api.schema.json#/$defs/Status",
+      "endpoint": "GET /status"
+    },
+    {
+      "path": "api/status-bare.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/search.json",
+      "schema": "api.schema.json#/$defs/Search",
+      "endpoint": "GET /search"
+    },
+    {
+      "path": "api/kinds.json",
+      "schema": "api.schema.json#/$defs/Kinds",
+      "endpoint": "GET /kinds"
+    },
+    {
+      "path": "api/raw-building.json",
+      "schema": "api.schema.json#/$defs/Raw",
+      "endpoint": "GET /raw/<kind>/<id>"
+    },
+    {
+      "path": "api/tools.json",
+      "schema": "api.schema.json#/$defs/ToolList",
+      "endpoint": "GET /tools"
+    },
+    {
+      "path": "api/tool-post.json",
+      "schema": "api.schema.json#/$defs/ToolPost"
+    },
+    {
+      "path": "api/events.json",
+      "schema": "api.schema.json#/$defs/Events",
+      "endpoint": "GET /events"
+    },
+    {
+      "path": "api/events-timeout.json",
+      "schema": "api.schema.json#/$defs/Events"
+    },
+    {
+      "path": "api/error.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "api/error-not-found.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "screens/home.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /home"
+    },
+    {
+      "path": "screens/list-building.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /list/<kind>"
+    },
+    {
+      "path": "screens/entry-building.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /entry/<kind>/<id>"
+    },
+    {
+      "path": "screens/entry-element.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/colony.json",
+      "schema": "api.schema.json#/$defs/ColonyReply",
+      "endpoint": "GET /colony"
+    },
+    {
+      "path": "screens/tool-form.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /tools/<id>"
+    },
+    {
+      "path": "screens/tool-result.json",
+      "schema": "screen.schema.json",
+      "endpoint": "POST /tools/<id>"
+    },
+    {
+      "path": "screens/all-blocks.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/all-ref-kinds.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "mod/export.json",
+      "schema": "mod-export.schema.json"
+    },
+    {
+      "path": "mod/live-running.json",
+      "schema": "mod-live.schema.json"
+    },
+    {
+      "path": "mod/live-menu.json",
+      "schema": "mod-live.schema.json"
+    },
+    {
+      "path": "art-dupe-d1.png",
+      "endpoint": "GET /art/<kind>/<id>",
+      "image": "png"
+    },
+    {
+      "path": "screens/resources.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /resources"
+    },
+    {
+      "path": "screens/settings.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /settings"
+    },
+    {
+      "path": "screens/settings-saved.json",
+      "schema": "screen.schema.json",
+      "endpoint": "POST /settings"
+    },
+    {
+      "path": "api/theme.json",
+      "schema": "theme.schema.json#/$defs/Theme",
+      "endpoint": "GET /theme"
+    },
+    {
+      "path": "api/theme-builtin.json",
+      "schema": "theme.schema.json#/$defs/Theme"
+    },
+    {
+      "path": "api/action-sent.json",
+      "schema": "api.schema.json#/$defs/ActionSent",
+      "endpoint": "POST /actions/<id>"
+    },
+    {
+      "path": "api/action-status.json",
+      "schema": "api.schema.json#/$defs/ActionStatus",
+      "endpoint": "GET /actions/<seq>"
+    },
+    {
+      "path": "api/action-status-failed.json",
+      "schema": "api.schema.json#/$defs/ActionStatus"
+    },
+    {
+      "path": "api/action-post.json",
+      "schema": "api.schema.json#/$defs/ActionPost"
+    },
+    {
+      "path": "api/settings-post.json",
+      "schema": "api.schema.json#/$defs/SettingsPost"
+    },
+    {
+      "path": "api/events-action.json",
+      "schema": "api.schema.json#/$defs/Events"
+    },
+    {
+      "path": "api/error-unavailable.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "screens/colony-v11.json",
+      "schema": "api.schema.json#/$defs/ColonyReply"
+    },
+    {
+      "path": "screens/dupe-page.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/dupe-page-onopen.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "mod/live-running-v2.json",
+      "schema": "mod-live.schema.json"
+    },
+    {
+      "path": "settings.json",
+      "schema": "settings.schema.json"
+    },
+    {
+      "path": "companion/art/manifest.json",
+      "schema": "mod-art-manifest.schema.json"
+    },
+    {
+      "path": "companion/theme/100001/theme.json",
+      "schema": "theme.schema.json#/$defs/ModTheme"
+    },
+    {
+      "path": "companion/commands/cmd-5.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-7.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-5.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-6.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-7.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-8.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "api/controls.json",
+      "schema": "api.schema.json#/$defs/Controls",
+      "endpoint": "GET /controls"
+    },
+    {
+      "path": "api/controls-pending.json",
+      "schema": "api.schema.json#/$defs/Controls"
+    },
+    {
+      "path": "api/controls-unavailable.json",
+      "schema": "api.schema.json#/$defs/Controls"
+    },
+    {
+      "path": "api/controls-post.json",
+      "schema": "api.schema.json#/$defs/ControlsPost",
+      "endpoint": "POST /controls"
+    },
+    {
+      "path": "api/sync.json",
+      "schema": "api.schema.json#/$defs/Sync",
+      "endpoint": "GET /sync"
+    },
+    {
+      "path": "api/sync-needed.json",
+      "schema": "api.schema.json#/$defs/Sync"
+    },
+    {
+      "path": "api/sync-post.json",
+      "schema": "api.schema.json#/$defs/SyncPost",
+      "endpoint": "POST /sync"
+    },
+    {
+      "path": "api/fonts.json",
+      "schema": "api.schema.json#/$defs/FontList",
+      "endpoint": "GET /fonts"
+    },
+    {
+      "path": "companion/fonts/100001/SynthSans.ttf",
+      "endpoint": "GET /fonts/<name>",
+      "font": "ttf"
+    },
+    {
+      "path": "api/events-controls.json",
+      "schema": "api.schema.json#/$defs/Events"
+    },
+    {
+      "path": "api/action-post-alert-activate.json",
+      "schema": "api.schema.json#/$defs/ActionPost"
+    },
+    {
+      "path": "api/action-post-alert-dismiss.json",
+      "schema": "api.schema.json#/$defs/ActionPost"
+    },
+    {
+      "path": "screens/alert-page.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/alert-page-dismissable.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/colony-alerts.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-9.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-10.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-11.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-12.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-13.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-9.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-10.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-11.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-13.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/sync/status.json",
+      "schema": "mod-sync-status.schema.json"
+    },
+    {
+      "path": "companion/sync/status-done.json",
+      "schema": "mod-sync-status.schema.json"
+    },
+    {
+      "path": "companion/fonts/100001/graystroke.json",
+      "schema": "font-atlas.schema.json"
+    },
+    {
+      "path": "api/theme-v12.json",
+      "schema": "theme.schema.json#/$defs/Theme"
+    },
+    {
+      "path": "companion-v12/theme/100001/theme.json",
+      "schema": "theme.schema.json#/$defs/ModTheme"
+    },
+    {
+      "path": "api/tabs.json",
+      "schema": "api.schema.json#/$defs/TabList",
+      "endpoint": "GET /tabs"
+    },
+    {
+      "path": "screens/actions.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /pad"
+    },
+    {
+      "path": "screens/actions-menu.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/buildings.json",
+      "schema": "screen.schema.json",
+      "endpoint": "GET /buildings"
+    },
+    {
+      "path": "screens/entry-building-v13.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/entry-building-locked.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/entry-building-ports.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/entry-building-plain.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "screens/settings-modstate.json",
+      "schema": "screen.schema.json"
+    },
+    {
+      "path": "api/status-modstate-missing.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/status-modstate-disabled.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/status-modstate-no-live.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/status-modstate-version-mismatch.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/status-modstate-ok.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "api/action-post-overlay-set.json",
+      "schema": "api.schema.json#/$defs/ActionPostOverlaySet"
+    },
+    {
+      "path": "api/action-post-tool-select.json",
+      "schema": "api.schema.json#/$defs/ActionPostToolSelect"
+    },
+    {
+      "path": "api/action-post-build-select.json",
+      "schema": "api.schema.json#/$defs/ActionPostBuildSelect"
+    },
+    {
+      "path": "api/mod-install-post.json",
+      "schema": "api.schema.json#/$defs/ModInstallPost"
+    },
+    {
+      "path": "api/mod-install-reply.json",
+      "schema": "api.schema.json#/$defs/ModInstallReply",
+      "endpoint": "POST /mod/install"
+    },
+    {
+      "path": "mod/export-v13.json",
+      "schema": "mod-export.schema.json"
+    },
+    {
+      "path": "mod/live-running-v13.json",
+      "schema": "mod-live.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-14.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-14.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-15.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-15.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "companion/commands/cmd-16.json",
+      "schema": "mod-command.schema.json"
+    },
+    {
+      "path": "companion/acks/ack-16.json",
+      "schema": "mod-ack.schema.json"
+    },
+    {
+      "path": "api/identity.json",
+      "schema": "api.schema.json#/$defs/Identity",
+      "endpoint": "GET /identity"
+    },
+    {
+      "path": "api/connect-state.json",
+      "schema": "api.schema.json#/$defs/ConnectState",
+      "endpoint": "GET /connect"
+    },
+    {
+      "path": "api/connect-state-off.json",
+      "schema": "api.schema.json#/$defs/ConnectState"
+    },
+    {
+      "path": "api/connect-state-plain-http.json",
+      "schema": "api.schema.json#/$defs/ConnectState"
+    },
+    {
+      "path": "api/connect-switch-post.json",
+      "schema": "api.schema.json#/$defs/ConnectSwitchPost",
+      "endpoint": "POST /connect/switch"
+    },
+    {
+      "path": "api/connect-claim-post.json",
+      "schema": "api.schema.json#/$defs/ClaimPost"
+    },
+    {
+      "path": "api/connect-claim-reply.json",
+      "schema": "api.schema.json#/$defs/ClaimReply",
+      "endpoint": "POST /connect/claim"
+    },
+    {
+      "path": "api/connect-devices.json",
+      "schema": "api.schema.json#/$defs/ConnectDevices",
+      "endpoint": "GET /connect/devices"
+    },
+    {
+      "path": "api/connect-done.json",
+      "schema": "api.schema.json#/$defs/ConnectDone",
+      "endpoint": "DELETE /connect/devices/<deviceId>"
+    },
+    {
+      "path": "api/error-unauthorized.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "api/error-rate-limited.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "api/error-bad-code.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "api/error-local-only.json",
+      "schema": "api.schema.json#/$defs/Error"
+    },
+    {
+      "path": "api/events-connect.json",
+      "schema": "api.schema.json#/$defs/Events"
+    },
+    {
+      "path": "api/status-connect.json",
+      "schema": "api.schema.json#/$defs/Status"
+    },
+    {
+      "path": "companion/pairing/state.json",
+      "schema": "pairing.schema.json#/$defs/State"
+    },
+    {
+      "path": "companion/pairing/state-off.json",
+      "schema": "pairing.schema.json#/$defs/State"
+    },
+    {
+      "path": "pairing/qr-payload.json",
+      "schema": "pairing.schema.json#/$defs/QrPayload"
+    },
+    {
+      "path": "pairing/mdns-txt.json",
+      "schema": "pairing.schema.json#/$defs/MdnsTxt"
+    },
+    {
+      "path": "companion-local/ONICompanion/marker.json",
+      "schema": "pairing.schema.json#/$defs/LocalMarker"
+    },
+    {
+      "path": "companion/pairing/requests/req-4.json",
+      "schema": "pairing.schema.json#/$defs/Request"
+    },
+    {
+      "path": "companion/pairing/requests/req-5.json",
+      "schema": "pairing.schema.json#/$defs/Request"
+    },
+    {
+      "path": "companion/pairing/requests/req-6.json",
+      "schema": "pairing.schema.json#/$defs/Request"
+    },
+    {
+      "path": "companion/pairing/requests/req-7.json",
+      "schema": "pairing.schema.json#/$defs/Request"
+    },
+    {
+      "path": "companion/pairing/requests/req-8.json",
+      "schema": "pairing.schema.json#/$defs/Request"
+    },
+    {
+      "path": "api/connect-done.json",
+      "schema": "api.schema.json#/$defs/ConnectDone",
+      "endpoint": "POST /connect/code"
+    },
+    {
+      "path": "api/connect-done.json",
+      "schema": "api.schema.json#/$defs/ConnectDone",
+      "endpoint": "POST /connect/reset-identity"
+    },
+    {
+      "path": "api/connect-state-plain-http.json",
+      "schema": "api.schema.json#/$defs/ConnectState",
+      "endpoint": "POST /connect/plain-http"
+    }
+  ]
+}

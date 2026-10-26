@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "title": "Buildings",
+  "subtitle": "2 entries",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "nav": {
+    "back": "home"
+  },
+  "refreshOn": [
+    "gamedata"
+  ],
+  "blocks": [
+    {
+      "type": "list",
+      "items": [
+        {
+          "ref": {
+            "kind": "building",
+            "id": "SynthWidgetMaker"
+          },
+          "title": "Widget Maker",
+          "subtitle": "3 x 2"
+        },
+        {
+          "ref": {
+            "kind": "building",
+            "id": "SynthLamp"
+          },
+          "title": "Lamp",
+          "subtitle": "1 x 1",
+          "badge": "Alpha"
+        }
+      ]
+    }
+  ]
+}

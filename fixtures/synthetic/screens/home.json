@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "title": "ONI Companion",
+  "subtitle": "Synth Colony, cycle 12",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony",
+    "gamedata"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "Colony"
+    },
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Cycle",
+          "value": 12
+        },
+        {
+          "label": "Duplicants",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Look up"
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Buildings",
+          "subtitle": "2 entries",
+          "badge": "2"
+        },
+        {
+          "title": "Elements",
+          "subtitle": "3 entries",
+          "badge": "3"
+        }
+      ]
+    },
+    {
+      "type": "notice",
+      "level": "info",
+      "text": "Search from the Look-up tab."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "bad_token",
+    "message": "Missing or wrong token."
+  }
+}

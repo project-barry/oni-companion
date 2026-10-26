@@ -1,0 +1,39 @@
+{
+  "tabs": [
+    {
+      "id": "colony",
+      "label": "Colony",
+      "path": "colony"
+    },
+    {
+      "id": "resources",
+      "label": "Resources",
+      "path": "resources"
+    },
+    {
+      "id": "buildings",
+      "label": "Buildings",
+      "path": "buildings"
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "path": "pad",
+      "needsLive": true
+    },
+    {
+      "id": "codex",
+      "label": "Database",
+      "path": "kinds",
+      "excludeKinds": [
+        "building"
+      ],
+      "includesTools": true
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "path": "settings"
+    }
+  ]
+}

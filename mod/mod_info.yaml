@@ -1,0 +1,6 @@
+# Checked against KMod.Mod.PackagedModInfo / GetModInfoForFolder in build 744825:
+# supportedContent is deprecated (logs a warning), so DLC restrictions are left out = works with any DLC set.
+# APIVersion 2 = Harmony 2 (Mod.MOD_API_VERSION). minimumSupportedBuild is compared with the game's ChangeList.
+minimumSupportedBuild: 700000
+APIVersion: 2
+version: 0.5.0

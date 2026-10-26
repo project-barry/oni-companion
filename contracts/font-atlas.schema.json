@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "font-atlas.schema.json",
+  "title": "ONI Companion Link: Graystroke SDF atlas table (v1.2)",
+  "description": "Written by the mod once per game build to <ONI user folder>/companion/fonts/<build>/graystroke.json beside the atlas texture graystroke.png (a signed-distance field, as the game's TextMeshPro atlas has it). Read from the user's own game at run time and never shipped. The core serves both through GET /fonts. Pixel coordinates have their origin at the TOP-LEFT of the atlas (the mod flips TextMeshPro's bottom-left rects); all metrics are in atlas pixels at pointSize. A front end draws a glyph by sampling `x,y,w,h`, smoothing the distance with `spread`, scaling by size/pointSize, and uses a fallback font for a character with no glyph.",
+  "type": "object",
+  "required": ["schema", "modVersion", "build", "name", "family", "atlas", "face", "glyphs"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "modVersion": { "type": "string" },
+    "build": { "type": "integer" },
+    "name": { "type": "string", "description": "The game's asset name of the font." },
+    "family": { "type": "string" },
+    "atlas": {
+      "type": "object", "required": ["file", "width", "height", "padding", "spread", "pointSize"], "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string", "pattern": "^[A-Za-z0-9_-]+\\.png$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "padding": { "type": "integer", "minimum": 0, "description": "SDF padding around each glyph, atlas pixels." },
+        "spread": { "type": "number", "minimum": 0, "description": "Distance range in atlas pixels that maps 0..1 in the texture (TextMeshPro gradient scale)." },
+        "pointSize": { "type": "number", "minimum": 1, "description": "Size the atlas was generated at." },
+        "encoding": { "enum": ["sdf-alpha", "sdf-red"], "description": "Which channel holds the distance." }
+      }
+    },
+    "face": {
+      "type": "object", "required": ["lineHeight", "ascent", "descent"], "additionalProperties": false,
+      "properties": {
+        "lineHeight": { "type": "number" },
+        "ascent": { "type": "number", "description": "Baseline to top, positive." },
+        "descent": { "type": "number", "description": "Baseline to bottom, negative." },
+        "scale": { "type": "number" },
+        "tabWidth": { "type": "number" }
+      }
+    },
+    "glyphs": {
+      "type": "array",
+      "description": "Sorted by unicode.",
+      "items": {
+        "type": "object", "required": ["unicode", "x", "y", "w", "h", "bearingX", "bearingY", "advance"], "additionalProperties": false,
+        "properties": {
+          "unicode": { "type": "integer", "minimum": 0 },
+          "x": { "type": "integer", "minimum": 0, "description": "Rect left in the atlas." },
+          "y": { "type": "integer", "minimum": 0, "description": "Rect top (from the top)." },
+          "w": { "type": "integer", "minimum": 0 },
+          "h": { "type": "integer", "minimum": 0 },
+          "bearingX": { "type": "number", "description": "Pen to rect left. x, y, w, h and the bearings describe the tight glyph; the front end adds `padding` around it when sampling." },
+          "bearingY": { "type": "number", "description": "Baseline to rect top, positive up." },
+          "advance": { "type": "number" }
+        }
+      }
+    },
+    "kerning": {
+      "type": "array", "description": "Optional pairs.",
+      "items": { "type": "object", "required": ["first", "second", "x"], "additionalProperties": false,
+        "properties": { "first": { "type": "integer" }, "second": { "type": "integer" }, "x": { "type": "number" } } }
+    }
+  }
+}

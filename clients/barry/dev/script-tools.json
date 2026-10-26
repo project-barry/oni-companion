@@ -1,0 +1,8 @@
+[
+ {"resize":[1240,1500]},
+ {"click":"tab2"},{"wait":700},{"shot":"20-tools"},
+ {"call":"push","args":[{"type":"screen","path":"tools/heat"}]},{"wait":800},{"shot":"21-form"},
+ {"click":"submitButton"},{"wait":900},{"shot":"22-result"},
+ {"call":"pop"},{"call":"pop"},
+ {"click":"tab0"},{"call":"openRef","args":[{"kind":"element","id":"SynthWidgetium"}]},{"wait":800},{"shot":"23-element"}
+]

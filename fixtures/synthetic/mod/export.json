@@ -1,0 +1,364 @@
+{
+  "schema": 1,
+  "modVersion": "0.1.0",
+  "build": 100001,
+  "dlcIds": [
+    "DLC_ALPHA_ID"
+  ],
+  "generatedAt": "2026-01-01T12:00:00Z",
+  "researchTypes": [
+    {
+      "id": "synth_basic",
+      "name": "Basic Research"
+    },
+    {
+      "id": "synth_adv",
+      "name": "Advanced Research",
+      "dlc": []
+    }
+  ],
+  "buildings": [
+    {
+      "id": "SynthWidgetMaker",
+      "name": "Widget Maker",
+      "dlc": [],
+      "desc": "Made-up.",
+      "effect": "Makes widgets.",
+      "category": "SynthCategory",
+      "size": {
+        "w": 3,
+        "h": 2
+      },
+      "hp": 100,
+      "buildTimeS": 30,
+      "materials": [
+        {
+          "tags": [
+            "SynthMetal",
+            "SynthStone"
+          ],
+          "kg": 200
+        }
+      ],
+      "decor": {
+        "value": -10,
+        "radius": 2
+      },
+      "noise": {
+        "value": 45,
+        "radius": 4
+      },
+      "power": {
+        "usesW": 120
+      },
+      "heat": {
+        "exhaustKDtuPerS": 0.5,
+        "selfKDtuPerS": 1
+      },
+      "overheatC": 75,
+      "ports": [
+        {
+          "kind": "solid",
+          "direction": "in",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "kind": "power",
+          "direction": "in",
+          "maxW": 120
+        }
+      ],
+      "converters": [
+        {
+          "label": "Make",
+          "inputs": [
+            {
+              "element": "SynthWidgetium",
+              "kg": 0.5
+            }
+          ],
+          "outputs": [
+            {
+              "element": "SynthGas",
+              "kg": 0.1,
+              "tempC": 40
+            }
+          ]
+        }
+      ],
+      "storage": {
+        "capacityKg": 600
+      },
+      "tech": "SynthWidgetry"
+    },
+    {
+      "id": "SynthLamp",
+      "name": "Lamp",
+      "dlc": [
+        "DLC_ALPHA_ID"
+      ],
+      "category": "SynthLights",
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "power": {
+        "usesW": 10
+      },
+      "tech": null
+    }
+  ],
+  "elements": [
+    {
+      "id": "SynthWidgetium",
+      "name": "Widgetium",
+      "dlc": [],
+      "state": "solid",
+      "tags": [
+        "SynthMetal"
+      ],
+      "specificHeat": 0.5,
+      "thermalConductivity": 10,
+      "molarMass": 50,
+      "highTransition": {
+        "tempC": 100,
+        "target": "SynthLiquid"
+      }
+    },
+    {
+      "id": "SynthLiquid",
+      "name": "Liquid Widgetium",
+      "dlc": [],
+      "state": "liquid",
+      "lowTransition": {
+        "tempC": 100,
+        "target": "SynthWidgetium"
+      },
+      "highTransition": {
+        "tempC": 300,
+        "target": "SynthGas",
+        "targetKgRatio": 1
+      }
+    },
+    {
+      "id": "SynthGas",
+      "name": "Widget Gas",
+      "dlc": [],
+      "state": "gas",
+      "lowTransition": {
+        "tempC": 300,
+        "target": "SynthLiquid"
+      }
+    }
+  ],
+  "critters": [
+    {
+      "id": "SynthBeast",
+      "name": "Synth Beast",
+      "dlc": [
+        "DLC_ALPHA_ID"
+      ],
+      "diets": [
+        {
+          "consumes": [
+            {
+              "tag": "SynthStone",
+              "kg": 140
+            }
+          ],
+          "produces": [
+            {
+              "element": "SynthWidgetium",
+              "kg": 50
+            }
+          ],
+          "caloriesPerCycle": 100000
+        }
+      ],
+      "temperatureC": {
+        "idealLo": 10,
+        "idealHi": 40,
+        "lethalLo": -10,
+        "lethalHi": 80
+      },
+      "lifespanCycles": 75,
+      "egg": {
+        "id": "SynthBeastEgg",
+        "incubationCycles": 10
+      },
+      "morphs": [],
+      "drops": [
+        {
+          "element": "SynthGas",
+          "kg": 1
+        }
+      ]
+    }
+  ],
+  "plants": [
+    {
+      "id": "SynthShrub",
+      "name": "Synth Shrub",
+      "dlc": [],
+      "growthCycles": 8,
+      "temperatureC": {
+        "idealLo": 10,
+        "idealHi": 30
+      },
+      "pressureKg": {
+        "min": 0.1
+      },
+      "atmosphere": [
+        "SynthGas"
+      ],
+      "irrigation": [
+        {
+          "element": "SynthLiquid",
+          "kg": 0.1
+        }
+      ],
+      "fertilizer": [],
+      "lightLux": 0,
+      "yield": [
+        {
+          "tag": "SynthFruit",
+          "kg": 1
+        }
+      ]
+    }
+  ],
+  "geysers": [
+    {
+      "id": "SynthGeyser",
+      "name": "Synth Geyser",
+      "dlc": [],
+      "element": "SynthGas",
+      "tempC": 200,
+      "rateKgPerS": {
+        "min": 1,
+        "max": 5
+      },
+      "eruptionIterationS": {
+        "min": 60,
+        "max": 600
+      },
+      "eruptDurationFraction": {
+        "min": 0.1,
+        "max": 0.9
+      },
+      "activeCycles": {
+        "min": 50,
+        "max": 100
+      },
+      "dormantCycles": {
+        "min": 50,
+        "max": 100
+      },
+      "activeFractionOfYear": {
+        "min": 0.4,
+        "max": 0.8
+      }
+    }
+  ],
+  "foods": [
+    {
+      "id": "SynthBar",
+      "name": "Synth Bar",
+      "dlc": [],
+      "kcal": 1000,
+      "quality": 1,
+      "spoilTimeS": null,
+      "effects": []
+    }
+  ],
+  "medicines": [
+    {
+      "id": "SynthPill",
+      "name": "Synth Pill",
+      "dlc": [],
+      "cures": [
+        "SynthSickness"
+      ],
+      "effect": "Made-up."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "SynthRecipeBar",
+      "name": "Synth Bar",
+      "dlc": [],
+      "fabricator": "SynthWidgetMaker",
+      "inputs": [
+        {
+          "element": "SynthWidgetium",
+          "kg": 5
+        }
+      ],
+      "outputs": [
+        {
+          "tag": "SynthBar",
+          "kg": 1
+        }
+      ],
+      "timeS": 50
+    }
+  ],
+  "techs": [
+    {
+      "id": "SynthWidgetry",
+      "name": "Widgetry",
+      "dlc": [],
+      "cost": {
+        "synth_basic": 15
+      },
+      "requires": [],
+      "unlocks": [
+        {
+          "kind": "building",
+          "id": "SynthWidgetMaker"
+        }
+      ]
+    }
+  ],
+  "traits": [
+    {
+      "id": "SynthQuick",
+      "name": "Quick",
+      "dlc": [],
+      "kind": "good"
+    }
+  ],
+  "skills": [
+    {
+      "id": "SynthDigging1",
+      "name": "Digging I",
+      "dlc": [],
+      "tier": 1,
+      "group": "Dig",
+      "requires": [],
+      "unlocks": [
+        "SynthHardDig"
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "id": "SynthHall",
+      "name": "Great Hall",
+      "dlc": [],
+      "effects": [
+        "Morale"
+      ],
+      "requirements": [
+        "Floor"
+      ],
+      "sizeRange": {
+        "minTiles": 32,
+        "maxTiles": 120
+      }
+    }
+  ]
+}

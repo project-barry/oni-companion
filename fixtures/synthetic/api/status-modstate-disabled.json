@@ -1,0 +1,66 @@
+{
+  "apiVersion": 1,
+  "coreVersion": "0.1.0",
+  "game": {
+    "found": true,
+    "build": 100001,
+    "dlcInstalled": [
+      "DLC_ALPHA_ID",
+      "DLC_BETA_ID"
+    ],
+    "dlcExported": [
+      "DLC_ALPHA_ID"
+    ],
+    "dlcMissingExport": [
+      "DLC_BETA_ID"
+    ]
+  },
+  "mod": {
+    "present": true,
+    "version": "0.1.0",
+    "exportFiles": [
+      "gamedata-100001-DLC_ALPHA_ID.json"
+    ],
+    "liveFresh": true
+  },
+  "cache": {
+    "state": "ready",
+    "builtAt": "2026-01-01T12:00:00Z"
+  },
+  "colony": {
+    "source": "mod-live",
+    "asOf": "2026-01-01T12:00:00Z",
+    "name": "Synth Colony",
+    "cycle": 12
+  },
+  "newestSave": {
+    "name": "Synth Colony Cycle 12",
+    "cycle": 12,
+    "modifiedAt": "2026-01-01T12:00:00Z"
+  },
+  "modState": {
+    "copies": [
+      "local"
+    ],
+    "state": "disabled",
+    "summary": "The game mod is installed but switched off.",
+    "steps": [
+      "Open the game's Mods menu.",
+      "Switch ONI Companion Link on.",
+      "Restart the game."
+    ],
+    "install": {
+      "available": false,
+      "reason": "The newest version is already installed.",
+      "target": "/home/synth/Klei/OxygenNotIncluded/mods/Local/OniCompanionLink"
+    },
+    "compat": {
+      "core": "1.3.0",
+      "coreSupportsMod": {
+        "min": "0.4.0"
+      },
+      "mod": "0.4.0",
+      "modRequiresCore": null
+    }
+  }
+}

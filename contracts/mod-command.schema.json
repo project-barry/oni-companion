@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-command.schema.json",
+  "title": "ONI Companion Link: companion/commands/cmd-<seq>.json (v1.3)",
+  "description": "Written by the core (write-tmp-then-rename) into <ONI user folder>/companion/commands/. The mod picks it up with a FileSystemWatcher, runs it on the main thread, writes companion/acks/ack-<seq>.json, then deletes the command file. ALLOW LIST (v1.3): `focus`, `art_request`, `alert_activate`, `alert_dismiss`, `set_speed`, `sync_assets`, `overlay_set`, `tool_select`, `build_select`; anything else is logged and dropped. The mod ignores a command whose createdAt is older than 10 s, runs at most 1 focus per 250 ms (art_request only queues, one per frame), and never acts on paths or code from a command. alert_activate = do what a click on that live alert, or on one of its highlighted lines (`link` = AlertLink.index), does in the game, through the game's own click path (so focus cycles like the game does); one camera move or one screen open, never a follow. alert_dismiss = dismiss that alert exactly as the game does, and only when the alert is dismissable; otherwise failed with \"Can't be dismissed\". Unknown alertId = failed \"Alert is gone\". set_speed = pause, or play at `speed` (default: the speed the game had), or speed = select `speed` and keep the pause state (the game's speed buttons), through the game's own speed control; the mod writes live.json at once afterwards. sync_assets = draw the catalog (`full`: everything, `missing`: only what the art manifest lacks or whose srcKey changed), export the Graystroke atlas + glyph table and the theme; the mod pauses the game while it runs and restores the previous speed after, writes companion/sync/status.json (mod-sync-status.schema.json), and acks at once (done \"Started\", or failed \"Already running\" / \"No colony loaded\" if it needs one). focus = ONE move of the camera (never the game's follow mode). art_request = draw one catalog image on demand: target.kind is a catalog art kind (never dupe: portraits draw themselves), target.id the game's id (letters, digits, _ . -, at most 100). The ack comes after the art manifest lists the image (done), or at once with the reason (failed, e.g. \"Unknown id\"). v1.3: overlay_set = switch the game to the overlay `mode` (an export overlays[].id) through the game's own overlay path; the active overlay again, or mode \"None\", goes back to no overlay like the game; failed with the reason for an unknown or unavailable mode (\"Not available in this game\"). tool_select = activate the tool `tool` (an export tools[].id) in the game, ready to drag on the game screen; `priority` (1..9 or \"emergency\") sets the game's priority first like its priority bar; with `priority` and no `tool` only the priority changes; failed for an unknown tool or one the game does not offer. build_select = open the game's build menu on `buildingId` and pick it for placement as if the player had clicked it; `materials` are element ids, one per material slot in the building's order, picked in the game's own material selector; `facadeId` picks a facade. failed with the game's reason: \"Not researched yet\" (add the tech name when the mod knows it), \"Not available in this game\", \"Not enough <material>\" (the game keeps its own choice for that slot). Same limits and acks as every command; the mod never acts on paths or code from a command.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Focus"
+    },
+    {
+      "$ref": "#/$defs/ArtRequest"
+    },
+    {
+      "$ref": "#/$defs/AlertActivate"
+    },
+    {
+      "$ref": "#/$defs/AlertDismiss"
+    },
+    {
+      "$ref": "#/$defs/SetSpeed"
+    },
+    {
+      "$ref": "#/$defs/SyncAssets"
+    },
+    {
+      "$ref": "#/$defs/OverlaySet"
+    },
+    {
+      "$ref": "#/$defs/ToolSelect"
+    },
+    {
+      "$ref": "#/$defs/BuildSelect"
+    }
+  ],
+  "$defs": {
+    "OverlaySet": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "overlay_set" },
+        "mode": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-]{1,100}$", "description": "An export overlays[].id, or None for no overlay." }
+      }
+    },
+    "ToolSelect": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type"],
+      "additionalProperties": false,
+      "anyOf": [ { "required": ["tool"] }, { "required": ["priority"] } ],
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "tool_select" },
+        "tool": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-]{1,100}$", "description": "An export tools[].id." },
+        "priority": { "description": "The game's priority setting: 1..9 or the string emergency.", "oneOf": [ { "type": "integer", "minimum": 1, "maximum": 9 }, { "const": "emergency" } ] }
+      }
+    },
+    "BuildSelect": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "buildingId"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "build_select" },
+        "buildingId": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-]{1,100}$" },
+        "materials": { "type": "array", "maxItems": 8, "items": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-]{1,100}$" }, "description": "Element id per material slot, in the building's slot order." },
+        "facadeId": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-]{1,100}$" }
+      }
+    },
+    "Focus": {
+      "type": "object",
+      "required": [
+        "schema",
+        "seq",
+        "createdAt",
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Set by the core; the ack file uses the same number."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC."
+        },
+        "type": {
+          "const": "focus"
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "dupe"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "live.json duplicants[].id."
+            }
+          }
+        },
+        "select": {
+          "type": "boolean",
+          "description": "Also select the target so its info panel opens. Default true."
+        }
+      }
+    },
+    "ArtRequest": {
+      "type": "object",
+      "required": [
+        "schema",
+        "seq",
+        "createdAt",
+        "type",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC."
+        },
+        "type": {
+          "const": "art_request"
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "building",
+                "element",
+                "critter",
+                "plant",
+                "seed",
+                "egg",
+                "food",
+                "medicine",
+                "item"
+              ]
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.\\-]{1,100}$"
+            }
+          }
+        }
+      }
+    },
+    "AlertActivate": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "alertId"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "alert_activate" },
+        "alertId": { "type": "string", "minLength": 1, "maxLength": 100, "description": "live.json alerts[].id." },
+        "link": { "type": "integer", "minimum": 0, "description": "AlertLink.index; absent = the alert's main click." }
+      }
+    },
+    "AlertDismiss": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "alertId"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "alert_dismiss" },
+        "alertId": { "type": "string", "minLength": 1, "maxLength": 100 }
+      }
+    },
+    "SetSpeed": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "state"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "set_speed" },
+        "state": { "enum": ["pause", "play", "speed"] },
+        "speed": { "enum": [1, 2, 3], "description": "Optional with state play (absent = keep the game's selected speed); required with state speed." }
+      }
+    },
+    "SyncAssets": {
+      "type": "object",
+      "required": ["schema", "seq", "createdAt", "type", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "seq": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "sync_assets" },
+        "scope": { "enum": ["full", "missing"] }
+      }
+    }
+  }
+}

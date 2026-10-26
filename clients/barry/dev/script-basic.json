@@ -1,0 +1,7 @@
+[
+ {"shot":"01-colony"},
+ {"click":"tab1"},{"wait":800},{"shot":"02-lookup"},
+ {"click":"searchField"},{"type":"wid"},{"wait":800},{"shot":"03-search"},
+ {"click":"tab2"},{"wait":800},{"shot":"04-tools"},
+ {"click":"tab3"},{"wait":800},{"shot":"05-settings"}
+]

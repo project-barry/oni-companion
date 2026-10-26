@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "seq": 7,
+  "state": "running",
+  "writtenAt": "2026-01-01T12:00:00Z",
+  "modVersion": "0.1.0",
+  "build": 100001,
+  "dlcIds": [
+    "DLC_ALPHA_ID"
+  ],
+  "colonyName": "Synth Colony",
+  "colonyGuid": "00000000-0000-0000-0000-000000000001",
+  "cycle": 12,
+  "timeOfDay": 0.42,
+  "paused": false,
+  "speed": 2,
+  "activeWorldId": 0,
+  "writeMs": 0.8,
+  "worlds": [
+    {
+      "id": 0,
+      "name": "Home Asteroid",
+      "isStarter": true,
+      "dupes": [
+        {
+          "id": "d1",
+          "name": "Ada",
+          "stress": 15,
+          "health": {
+            "value": 100,
+            "max": 100
+          },
+          "calories": {
+            "value": 3200,
+            "max": 4000
+          },
+          "breath": {
+            "value": 100,
+            "max": 100
+          },
+          "bladder": 10,
+          "morale": {
+            "value": 12,
+            "required": 8
+          },
+          "chore": "Dig",
+          "skills": [
+            "SynthDigging1"
+          ],
+          "traits": [
+            "SynthQuick"
+          ],
+          "assignedSkill": "SynthDigging1"
+        },
+        {
+          "id": "d2",
+          "name": "Bo",
+          "stress": 40,
+          "health": {
+            "value": 100,
+            "max": 100
+          },
+          "calories": {
+            "value": 3200,
+            "max": 4000
+          },
+          "breath": {
+            "value": 100,
+            "max": 100
+          },
+          "bladder": 10,
+          "morale": {
+            "value": 12,
+            "required": 8
+          },
+          "chore": null,
+          "skills": [
+            "SynthDigging1"
+          ],
+          "traits": [
+            "SynthQuick"
+          ],
+          "assignedSkill": "SynthDigging1"
+        }
+      ],
+      "resources": {
+        "SynthWidgetium": 1200.5,
+        "SynthBar": 12
+      },
+      "critters": [
+        {
+          "id": "SynthBeast",
+          "count": 4,
+          "tame": 4,
+          "eggs": 1
+        }
+      ],
+      "alerts": [
+        {
+          "id": "a1",
+          "level": "bad",
+          "text": "Low air",
+          "cycle": 12,
+          "count": 1
+        }
+      ],
+      "research": {
+        "current": {
+          "tech": "SynthWidgetry",
+          "points": {
+            "synth_basic": 5
+          },
+          "cost": {
+            "synth_basic": 15
+          }
+        },
+        "queue": [
+          {
+            "tech": "SynthWidgetry",
+            "points": {
+              "synth_basic": 5
+            },
+            "cost": {
+              "synth_basic": 15
+            }
+          }
+        ],
+        "completed": []
+      },
+      "power": [
+        {
+          "id": 1,
+          "generatedW": 800,
+          "consumedW": 300,
+          "batteryJ": 1000,
+          "batteryMaxJ": 4000,
+          "overloaded": false
+        }
+      ]
+    }
+  ]
+}

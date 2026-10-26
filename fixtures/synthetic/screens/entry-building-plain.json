@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "title": "Wire Bridge",
+  "subtitle": "Building",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "nav": {
+    "back": "home"
+  },
+  "refreshOn": [
+    "gamedata",
+    "build"
+  ],
+  "blocks": [
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "Base game",
+          "style": "dlc"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Wire Bridge",
+          "actions": [
+            {
+              "id": "build_select",
+              "label": "Build",
+              "args": {
+                "buildingId": "SynthWireBridge"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "title": "Basics",
+      "rows": [
+        {
+          "label": "Build menu",
+          "value": "Base"
+        },
+        {
+          "label": "Size",
+          "value": "3 x 1",
+          "unit": "tiles"
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Open on the ONI wiki",
+      "url": "https://oxygennotincluded.wiki.gg/wiki/Wire_Bridge"
+    }
+  ]
+}

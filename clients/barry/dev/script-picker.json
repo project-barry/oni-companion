@@ -1,0 +1,5 @@
+[
+ {"resize":[1240,1100]},
+ {"call":"push","args":[{"type":"screen","path":"tools/heat"}]},{"wait":800},
+ {"click":"elementField"},{"wait":500},{"type":"wid"},{"wait":800},{"shot":"30-picker"}
+]

@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "local_only",
+    "message": "Only the game device can do this."
+  }
+}

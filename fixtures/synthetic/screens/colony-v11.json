@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "title": "Synth Colony",
+  "subtitle": "Cycle 12, Home Asteroid",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony"
+  ],
+  "blocks": [
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Cycle",
+          "value": 12
+        },
+        {
+          "label": "Time of day",
+          "value": "42%"
+        },
+        {
+          "label": "Speed",
+          "value": "2x"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "title": "Alerts",
+      "items": [
+        {
+          "title": "Low air",
+          "badge": "bad",
+          "tone": "bad"
+        }
+      ],
+      "empty": "No alerts."
+    },
+    {
+      "type": "grid",
+      "title": "Duplicants",
+      "cards": [
+        {
+          "title": "Bo",
+          "subtitle": "Idle",
+          "tone": "bad",
+          "art": "/api/v1/art/dupe/d2",
+          "meters": [
+            {
+              "label": "Stress",
+              "value": 40,
+              "max": 100,
+              "unit": "%",
+              "tone": "warn"
+            },
+            {
+              "label": "Health",
+              "value": 70,
+              "max": 100,
+              "tone": "good"
+            },
+            {
+              "label": "Calories",
+              "value": 1500,
+              "max": 4000,
+              "unit": "kcal",
+              "tone": "good"
+            }
+          ],
+          "badges": [
+            {
+              "level": "danger",
+              "label": "Suffocating"
+            },
+            {
+              "level": "warn",
+              "label": "Sick"
+            },
+            {
+              "level": "warn",
+              "label": "Stressed"
+            }
+          ],
+          "ref": {
+            "kind": "dupe",
+            "id": "d2",
+            "art": "/api/v1/art/dupe/d2"
+          }
+        },
+        {
+          "title": "Ada",
+          "subtitle": "Dig",
+          "tone": "good",
+          "art": "/api/v1/art/dupe/d1",
+          "meters": [
+            {
+              "label": "Stress",
+              "value": 15,
+              "max": 100,
+              "unit": "%",
+              "tone": "good"
+            },
+            {
+              "label": "Health",
+              "value": 100,
+              "max": 100,
+              "tone": "good"
+            },
+            {
+              "label": "Calories",
+              "value": 3200,
+              "max": 4000,
+              "unit": "kcal",
+              "tone": "good"
+            }
+          ],
+          "badges": [
+            {
+              "level": "info",
+              "label": "Hungry"
+            }
+          ],
+          "ref": {
+            "kind": "dupe",
+            "id": "d1",
+            "art": "/api/v1/art/dupe/d1"
+          }
+        }
+      ]
+    }
+  ],
+  "raw": {
+    "source": "mod-live",
+    "asOf": "2026-01-01T12:00:00Z",
+    "state": "running",
+    "colonyName": "Synth Colony",
+    "cycle": 12,
+    "timeOfDay": 0.42,
+    "paused": false,
+    "speed": 2,
+    "activeWorldId": 0,
+    "worlds": []
+  },
+  "worldSwitcher": {
+    "active": 0,
+    "worlds": [
+      {
+        "id": 0,
+        "name": "Home Asteroid"
+      },
+      {
+        "id": 1,
+        "name": "Far Asteroid"
+      }
+    ]
+  }
+}

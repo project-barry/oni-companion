@@ -1,0 +1,6 @@
+[
+ {"wait": 1500}, {"click": "tab5"}, {"wait": 900}, {"shot": "01-settings"},
+ {"click": "connectButton"}, {"wait": 1500}, {"shot": "02-connect-on"},
+ {"click": "removeDevice-d-0123456789ab"}, {"wait": 900}, {"shot": "03-after-remove"},
+ {"click": "resetIdentityButton"}, {"wait": 600}, {"shot": "04-reset-ask"}
+]

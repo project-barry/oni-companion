@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "modVersion": "0.2.0",
+  "build": 100001,
+  "dlcIds": [
+    "DLC_ALPHA_ID"
+  ],
+  "writtenAt": "2026-01-01T12:00:00Z",
+  "catalogComplete": true,
+  "stats": {
+    "totalMs": 850.5,
+    "worstFrameMs": 3.2,
+    "count": 8
+  },
+  "files": [
+    {
+      "kind": "building",
+      "id": "SynthWidget",
+      "path": "100001/building/SynthWidget.png",
+      "size": 330,
+      "sha256": "7f85c5a26292bd15ef218bc5e649147c7aa28c3bfad8049f08f18f70a27e67b1",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "element",
+      "id": "SynthWidgetium",
+      "path": "100001/element/SynthWidgetium.png",
+      "size": 430,
+      "sha256": "0974be29549f1165bb78915ceab066e8f8de56b2f8754ab8078c7de2b950c9e6",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "critter",
+      "id": "SynthBeast",
+      "path": "100001/critter/SynthBeast.png",
+      "size": 419,
+      "sha256": "9e8481336a7c26515da4256218d9a5608d42f73f1f82f13cc0df7efdf7164d5f",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "plant",
+      "id": "SynthPlant",
+      "path": "100001/plant/SynthPlant.png",
+      "size": 421,
+      "sha256": "23ee66a3afd215e6d3a25b265f75faccce051e77bd6b5b19412d8fe950bdf3ed",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "food",
+      "id": "SynthBar",
+      "path": "100001/food/SynthBar.png",
+      "size": 330,
+      "sha256": "588c4d35d2dc3f39007480a5a575d23d290fa9efda36cf813fe000e81fe0571a",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "item",
+      "id": "SynthTag",
+      "path": "100001/item/SynthTag.png",
+      "size": 430,
+      "sha256": "0b0aab3e6133cd88021163e3fdf7f7e1d5f1d0c85cb2ec350cad2e6585ed41a0",
+      "width": 128,
+      "height": 128
+    },
+    {
+      "kind": "dupe",
+      "id": "d1",
+      "path": "100001/dupe/d1-ab12cd34.png",
+      "appearanceHash": "ab12cd34",
+      "size": 953,
+      "sha256": "3a5aa16e610bf5013780f92718564e839da04130427e98931c2473f29f3f6488",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "kind": "dupe",
+      "id": "d2",
+      "path": "100001/dupe/d2-0f0f0f0f.png",
+      "appearanceHash": "0f0f0f0f",
+      "size": 953,
+      "sha256": "428526461fc334ee1eb6600e941f0aa9968a745c0c86ac33b4f01deda86bc32b",
+      "width": 256,
+      "height": 256
+    }
+  ]
+}

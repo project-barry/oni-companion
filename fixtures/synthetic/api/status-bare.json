@@ -1,0 +1,17 @@
+{
+  "apiVersion": 1,
+  "coreVersion": "0.1.0",
+  "game": {
+    "found": false
+  },
+  "mod": {
+    "present": false
+  },
+  "cache": {
+    "state": "none"
+  },
+  "colony": {
+    "source": "none"
+  },
+  "newestSave": null
+}

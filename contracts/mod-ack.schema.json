@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-ack.schema.json",
+  "title": "ONI Companion Link: companion/acks/ack-<seq>.json (v1.1, v1.3 commands)",
+  "description": "Written by the mod (write-tmp-then-rename) after it ran, or refused, cmd-<seq>.json. The core turns it into GET /actions/<seq> and an 'action' event. v1.2 commands (alert_activate, alert_dismiss, set_speed, sync_assets) are acked the same way: alert_activate / alert_dismiss / set_speed after the game call ran (done), or at once failed with a short message (\"Alert is gone\", \"Can't be dismissed\", \"No colony loaded\"); v1.3 commands (overlay_set, tool_select, build_select) are acked after the game call ran (done) or at once failed with the game's reason (\"Not researched yet\", \"Not available in this game\", \"Not enough Copper\"); sync_assets acks at once (\"Started\"), progress goes to companion/sync/status.json. No ack within 10 s = state expired in the API (the mod never writes 'expired').",
+  "type": "object",
+  "required": ["schema", "seq", "state", "ackedAt"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "seq": { "type": "integer", "minimum": 1 },
+    "state": { "enum": ["done", "failed"] },
+    "message": { "type": "string", "description": "Short, shown to the user, e.g. \"Duplicant not found\" or \"Command too old\"." },
+    "ackedAt": { "type": "string", "format": "date-time" }
+  }
+}

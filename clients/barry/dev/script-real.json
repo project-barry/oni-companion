@@ -1,0 +1,10 @@
+[
+ {"resize":[1240,1500]},
+ {"shot":"40-colony"},
+ {"call":"openRef","args":[{"kind":"building","id":"Generator"}]},{"wait":900},{"shot":"41-building"},
+ {"call":"pop"},
+ {"call":"openRef","args":[{"kind":"element","id":"Algae"}]},{"wait":900},{"shot":"42-element"},
+ {"call":"pop"},
+ {"call":"push","args":[{"type":"screen","path":"tools/heat"}]},{"wait":800},
+ {"click":"submitButton"},{"wait":900},{"shot":"43-heat-result"}
+]

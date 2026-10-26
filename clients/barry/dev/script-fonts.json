@@ -1,0 +1,7 @@
+[
+ {"resize":[1240,1500]},
+ {"wait":2500},
+ {"shot":"60-colony"},
+ {"call":"openRef","args":[{"kind":"building","id":"Generator"}]},{"wait":1500},{"shot":"61-building"},
+ {"click":"tab1"},{"wait":1500},{"shot":"62-resources"}
+]

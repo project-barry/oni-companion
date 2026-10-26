@@ -1,0 +1,7 @@
+[
+ {"wait": 1500}, {"click": "tab5"}, {"wait": 900},
+ {"click": "connectButton"}, {"wait": 1500},
+ {"drag": [300, 450, 300, 100]}, {"wait": 600}, {"shot": "06-scrolled-devices"},
+ {"drag": [300, 450, 300, 100]}, {"wait": 600}, {"shot": "07-scrolled-end"},
+ {"click": "resetIdentityButton"}, {"wait": 800}, {"shot": "08-reset-ask"}
+]

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "title": "Widgetium",
+  "subtitle": "Element",
+  "source": "yaml",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "gamedata"
+  ],
+  "blocks": [
+    {
+      "type": "notice",
+      "level": "warn",
+      "title": "Mod missing",
+      "text": "Install the ONI Companion Link mod for numbers."
+    },
+    {
+      "type": "phases",
+      "title": "States",
+      "states": [
+        {
+          "state": "solid",
+          "label": "Solid",
+          "range": "below 100 C",
+          "loC": null,
+          "hiC": 100,
+          "target": {
+            "kind": "element",
+            "id": "SynthLiquid"
+          }
+        },
+        {
+          "state": "liquid",
+          "label": "Liquid",
+          "range": "100 to 300 C",
+          "loC": 100,
+          "hiC": 300,
+          "target": {
+            "kind": "element",
+            "id": "SynthGas"
+          }
+        },
+        {
+          "state": "gas",
+          "label": "Gas",
+          "range": "above 300 C",
+          "loC": 300,
+          "hiC": null
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Open the wiki page",
+      "url": "https://example.com/wiki/Widgetium"
+    }
+  ]
+}

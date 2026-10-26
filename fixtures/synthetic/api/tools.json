@@ -1,0 +1,14 @@
+{
+  "tools": [
+    {
+      "id": "heat",
+      "title": "Heat",
+      "summary": "Energy to change a temperature"
+    },
+    {
+      "id": "power-budget",
+      "title": "Power budget",
+      "summary": "Add up building watts"
+    }
+  ]
+}

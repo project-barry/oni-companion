@@ -1,0 +1,38 @@
+{
+  "build": 100001,
+  "fonts": [
+    {
+      "name": "SynthSans.ttf",
+      "family": "Synth Sans",
+      "style": "regular",
+      "kind": "ttf",
+      "url": "/api/v1/fonts/SynthSans.ttf",
+      "size": 1,
+      "roles": [
+        "body"
+      ]
+    },
+    {
+      "name": "graystroke.png",
+      "family": "Synth Display",
+      "kind": "sdfAtlasImage",
+      "url": "/api/v1/fonts/graystroke.png",
+      "size": 1,
+      "roles": [
+        "header",
+        "title"
+      ]
+    },
+    {
+      "name": "graystroke.json",
+      "family": "Synth Display",
+      "kind": "sdfAtlasTable",
+      "url": "/api/v1/fonts/graystroke.json",
+      "size": 1,
+      "roles": [
+        "header",
+        "title"
+      ]
+    }
+  ]
+}

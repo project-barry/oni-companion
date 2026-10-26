@@ -1,0 +1,3 @@
+title: ONI Companion Link
+description: Writes game data and live colony state to files for the ONI Companion app. Writes nothing into saves and opens no network connections.
+staticID: OniCompanionLink

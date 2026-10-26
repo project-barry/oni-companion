@@ -1,0 +1,285 @@
+{
+  "schema": 1,
+  "title": "Actions",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "pad",
+    "gamedata",
+    "status"
+  ],
+  "blocks": [
+    {
+      "type": "notice",
+      "level": "info",
+      "text": "Load a colony in the game first."
+    },
+    {
+      "type": "grid",
+      "title": "Overlays",
+      "cards": [
+        {
+          "title": "Oxygen Overlay",
+          "subtitle": "F1",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Oxygen Overlay",
+              "args": {
+                "mode": "SynthOxygen"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "Power Overlay",
+          "subtitle": "F2",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Power Overlay",
+              "args": {
+                "mode": "SynthPower"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "Radiation Overlay",
+          "subtitle": "F3",
+          "actions": [
+            {
+              "id": "overlay_set",
+              "label": "Radiation Overlay",
+              "args": {
+                "mode": "SynthRadiation"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        }
+      ],
+      "variant": "pad"
+    },
+    {
+      "type": "grid",
+      "title": "Priority",
+      "cards": [
+        {
+          "title": "1",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 1",
+              "args": {
+                "priority": 1
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "2",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 2",
+              "args": {
+                "priority": 2
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "3",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 3",
+              "args": {
+                "priority": 3
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "4",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 4",
+              "args": {
+                "priority": 4
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "5",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 5",
+              "args": {
+                "priority": 5
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "6",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 6",
+              "args": {
+                "priority": 6
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "7",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 7",
+              "args": {
+                "priority": 7
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "8",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 8",
+              "args": {
+                "priority": 8
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "9",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Priority 9",
+              "args": {
+                "priority": 9
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "!",
+          "subtitle": "Emergency",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Emergency",
+              "args": {
+                "priority": "emergency"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        }
+      ],
+      "variant": "priority"
+    },
+    {
+      "type": "grid",
+      "title": "Tools",
+      "cards": [
+        {
+          "title": "Dig",
+          "subtitle": "G",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Dig",
+              "args": {
+                "tool": "SynthDig"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "Cancel",
+          "subtitle": "Z",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Cancel",
+              "args": {
+                "tool": "SynthCancel"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "Mop",
+          "subtitle": "M",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Mop",
+              "args": {
+                "tool": "SynthMop"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        },
+        {
+          "title": "Harvest",
+          "subtitle": "H",
+          "actions": [
+            {
+              "id": "tool_select",
+              "label": "Harvest",
+              "args": {
+                "tool": "SynthHarvest"
+              },
+              "enabled": false,
+              "reason": "Load a colony in the game first."
+            }
+          ]
+        }
+      ],
+      "variant": "pad"
+    }
+  ]
+}

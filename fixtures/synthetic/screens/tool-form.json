@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "title": "Heat",
+  "nav": {
+    "back": "home"
+  },
+  "blocks": [
+    {
+      "type": "form",
+      "tool": "heat",
+      "submitLabel": "Calculate",
+      "fields": [
+        {
+          "kind": "number",
+          "name": "mass",
+          "label": "Mass",
+          "default": 1,
+          "min": 0,
+          "units": [
+            {
+              "id": "kg",
+              "label": "kg"
+            },
+            {
+              "id": "g",
+              "label": "g"
+            }
+          ],
+          "defaultUnit": "kg"
+        },
+        {
+          "kind": "element",
+          "name": "element",
+          "label": "Element",
+          "filter": "any"
+        },
+        {
+          "kind": "number",
+          "name": "deltaT",
+          "label": "Temperature change",
+          "default": 10,
+          "unit": "C"
+        },
+        {
+          "kind": "choice",
+          "name": "mode",
+          "label": "Mode",
+          "options": [
+            {
+              "value": "heat",
+              "label": "Heat"
+            },
+            {
+              "value": "cool",
+              "label": "Cool"
+            }
+          ],
+          "default": "heat"
+        },
+        {
+          "kind": "toggle",
+          "name": "useKelvin",
+          "label": "Show Kelvin",
+          "default": false
+        }
+      ]
+    }
+  ]
+}

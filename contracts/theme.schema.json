@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "theme.schema.json",
+  "title": "ONI Companion theme (v1.1)",
+  "description": "Named tokens only; blocks stay layout-free and each front end maps tokens to its own widgets. `Theme` is the GET /api/v1/theme reply. `ModTheme` is companion/theme/<build>/theme.json written by the mod once per build (colors read from the game's own UI style assets, never hand-picked; PNGs rendered from the running game on the user's device, none shipped). With no game theme the core returns the built-in dark theme (source \"builtin\", no images).",
+  "$defs": {
+    "Color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$", "description": "#RRGGBB or #RRGGBBAA." },
+    "Colors": {
+      "type": "object", "additionalProperties": false,
+      "required": ["background", "panel", "header", "border", "buttonNormal", "buttonHover", "buttonPressed", "text", "textDim", "textTitle", "positive", "negative", "progressFill", "progressTrack", "meterStress", "meterHealth", "meterCalories"],
+      "properties": {
+        "background": { "$ref": "#/$defs/Color", "description": "Page background." },
+        "panel": { "$ref": "#/$defs/Color" },
+        "header": { "$ref": "#/$defs/Color" },
+        "border": { "$ref": "#/$defs/Color" },
+        "buttonNormal": { "$ref": "#/$defs/Color" },
+        "buttonHover": { "$ref": "#/$defs/Color" },
+        "buttonPressed": { "$ref": "#/$defs/Color" },
+        "text": { "$ref": "#/$defs/Color" },
+        "textDim": { "$ref": "#/$defs/Color" },
+        "textTitle": { "$ref": "#/$defs/Color" },
+        "positive": { "$ref": "#/$defs/Color", "description": "Good values and the good tone." },
+        "negative": { "$ref": "#/$defs/Color", "description": "Bad values and the bad tone." },
+        "warning": { "$ref": "#/$defs/Color", "description": "The warn tone and warn badges. Optional: front ends fall back to a mix of positive and negative." },
+        "info": { "$ref": "#/$defs/Color", "description": "The info tone. Optional." },
+        "progressFill": { "$ref": "#/$defs/Color" },
+        "progressTrack": { "$ref": "#/$defs/Color" },
+        "meterStress": { "$ref": "#/$defs/Color" },
+        "meterHealth": { "$ref": "#/$defs/Color" },
+        "meterCalories": { "$ref": "#/$defs/Color" },
+        "sectionHeader": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Fill of a section header bar (the game's STATUS / CONDITION bars). Average of the sectionHeader slice's fill area." },
+        "sectionHeaderText": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Text on a section header bar." },
+        "tabBg": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Fill of an inactive tab (average of the tab slice's fill area)." },
+        "tabActiveBg": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Fill of the active tab." },
+        "tabText": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Label of an inactive tab; always readable on tabBg." },
+        "tabTextActive": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Label of the active tab; always readable on tabActiveBg." },
+        "alertBg": { "$ref": "#/$defs/Color", "description": "v1.2, optional, may be translucent (#RRGGBBAA). Background of the game's alert list rows." },
+        "alertText": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Text of an alert row." },
+        "alertBadBg": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Background of a bad (red) alert row." },
+        "alertBadText": { "$ref": "#/$defs/Color", "description": "v1.2, optional. Text of a bad alert row." }
+      }
+    },
+    "Insets": {
+      "description": "9-slice border sizes in source pixels.",
+      "type": "object", "required": ["left", "top", "right", "bottom"], "additionalProperties": false,
+      "properties": {
+        "left": { "type": "integer", "minimum": 0 }, "top": { "type": "integer", "minimum": 0 },
+        "right": { "type": "integer", "minimum": 0 }, "bottom": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "SliceName": { "enum": ["panel", "header", "button", "buttonHover", "buttonPressed", "tab", "tabActive", "sectionHeader"] },
+    "FontRole": {
+      "description": "v1.2. A font role. The theme names a role, never a file: the front end maps the role to a font it loaded from GET /fonts, else to `fallback`.",
+      "type": "object", "required": ["family"], "additionalProperties": false,
+      "properties": {
+        "family": { "type": "string", "minLength": 1, "description": "The game's family name for the role (Noto Sans, Graystroke, Economica, League Spartan)." },
+        "font": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$", "description": "Name of the GET /fonts entry that provides it. Absent while that font is not synced yet." },
+        "fallback": { "type": "array", "items": { "type": "string" }, "description": "Families to use in order when the font is missing, e.g. [\"Economica\", \"Noto Sans\"]." }
+      }
+    },
+    "FontRoles": {
+      "type": "object", "required": ["body", "header", "title"], "additionalProperties": false,
+      "properties": {
+        "body": { "$ref": "#/$defs/FontRole", "description": "Running text (the game: Noto Sans)." },
+        "header": { "$ref": "#/$defs/FontRole", "description": "Section and page headers (the game: Graystroke, an SDF atlas; front ends may draw it with the atlas or fall back)." },
+        "title": { "$ref": "#/$defs/FontRole", "description": "Large titles and numbers." }
+      }
+    },
+    "Font": {
+      "type": "object", "required": ["family"], "additionalProperties": false,
+      "properties": {
+        "family": { "type": "string", "minLength": 1, "description": "A font the front end already has (Noto Sans); the fallback for every role." },
+        "roles": { "$ref": "#/$defs/FontRoles", "description": "v1.2, optional. The core fills it from the fonts it extracted/received; absent on the builtin theme and before the first sync." }
+      }
+    },
+    "IconName": {
+      "description": "v1.2. Icon names the mod's theme export may supply: speedPause, speedPlay, speed1, speed2, speed3 (the game's speed control), and alertBad, alertMinorBad, alertNeutral, alertGood, alertEvent, alertTutorial, alertThreatening, alertMessage, alertMessageImportant (alertNeutral, alertMinorBad and alertGood may point at the same file). A front end draws a plain icon for any name it lacks.",
+      "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "Icon": {
+      "description": "v1.2. GET /theme form: a single image, `art` is /api/v1/art/ui/<name>. `activeArt` is the pressed/selected look when the game has one.",
+      "type": "object", "required": ["name", "art", "width", "height"], "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/IconName" },
+        "art": { "$ref": "blocks.schema.json#/$defs/ArtPath" },
+        "activeArt": { "$ref": "blocks.schema.json#/$defs/ArtPath" },
+        "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ModIcon": {
+      "description": "v1.2. Mod file form of an Icon.",
+      "type": "object", "required": ["name", "file", "width", "height"], "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/IconName" },
+        "file": { "type": "string", "pattern": "^[A-Za-z0-9_-]+\\.png$" },
+        "activeFile": { "type": "string", "pattern": "^[A-Za-z0-9_-]+\\.png$" },
+        "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "Slice": {
+      "description": "GET /theme form: `art` is /api/v1/art/ui/<name>.",
+      "type": "object", "required": ["name", "art", "width", "height", "insets"], "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/SliceName" },
+        "art": { "$ref": "blocks.schema.json#/$defs/ArtPath" },
+        "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 },
+        "insets": { "$ref": "#/$defs/Insets" }
+      }
+    },
+    "ModSlice": {
+      "description": "Mod file form: `file` is relative to the theme folder (companion/theme/<build>/).",
+      "type": "object", "required": ["name", "file", "width", "height", "insets"], "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/SliceName" },
+        "file": { "type": "string", "pattern": "^[A-Za-z0-9_-]+\\.png$" },
+        "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 },
+        "insets": { "$ref": "#/$defs/Insets" }
+      }
+    },
+    "Theme": {
+      "type": "object", "required": ["schema", "source", "colors", "font", "slices"], "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "source": { "enum": ["builtin", "game"] },
+        "build": { "type": "integer", "description": "Game build the game theme was read from." },
+        "colors": { "$ref": "#/$defs/Colors" },
+        "font": { "$ref": "#/$defs/Font" },
+        "slices": { "type": "array", "items": { "$ref": "#/$defs/Slice" }, "description": "Empty for the builtin theme: front ends draw plain rectangles." },
+        "icons": { "type": "array", "items": { "$ref": "#/$defs/Icon" }, "description": "v1.2, optional. Speed-control and alert icons from the game. Absent: plain icons." }
+      }
+    },
+    "ModTheme": {
+      "type": "object", "required": ["schema", "modVersion", "build", "writtenAt", "colors", "slices"], "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "modVersion": { "type": "string" },
+        "renderRev": { "type": "integer", "description": "v1.2, optional. Version of the theme the mod renders; the mod rebuilds the theme only when the game build or this number changes." },
+        "build": { "type": "integer" },
+        "writtenAt": { "type": "string", "format": "date-time" },
+        "colors": { "$ref": "#/$defs/Colors" },
+        "slices": { "type": "array", "items": { "$ref": "#/$defs/ModSlice" } },
+        "icons": { "type": "array", "items": { "$ref": "#/$defs/ModIcon" }, "description": "v1.2, optional. Files are in the same theme folder." }
+      }
+    }
+  },
+  "$ref": "#/$defs/Theme"
+}

@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "modVersion": "0.2.0",
+  "build": 100001,
+  "writtenAt": "2026-01-01T12:00:00Z",
+  "colors": {
+    "background": "#10151c",
+    "panel": "#1e2430",
+    "header": "#323c50",
+    "border": "#505a6e",
+    "buttonNormal": "#3c4659",
+    "buttonHover": "#4b556e",
+    "buttonPressed": "#283040",
+    "text": "#e6e9ef",
+    "textDim": "#98a2b3",
+    "textTitle": "#ffffff",
+    "positive": "#4cc38a",
+    "negative": "#ef5b5b",
+    "warning": "#e8b44a",
+    "info": "#5aa9ff",
+    "progressFill": "#4cc38a",
+    "progressTrack": "#283040",
+    "meterStress": "#e8b44a",
+    "meterHealth": "#ef5b5b",
+    "meterCalories": "#5aa9ff"
+  },
+  "slices": [
+    {
+      "name": "panel",
+      "file": "panel.png",
+      "width": 48,
+      "height": 48,
+      "insets": {
+        "left": 6,
+        "top": 6,
+        "right": 6,
+        "bottom": 6
+      }
+    },
+    {
+      "name": "header",
+      "file": "header.png",
+      "width": 48,
+      "height": 24,
+      "insets": {
+        "left": 4,
+        "top": 4,
+        "right": 4,
+        "bottom": 4
+      }
+    },
+    {
+      "name": "button",
+      "file": "button.png",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    },
+    {
+      "name": "buttonHover",
+      "file": "buttonHover.png",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    },
+    {
+      "name": "buttonPressed",
+      "file": "buttonPressed.png",
+      "width": 32,
+      "height": 24,
+      "insets": {
+        "left": 3,
+        "top": 3,
+        "right": 3,
+        "bottom": 3
+      }
+    }
+  ]
+}

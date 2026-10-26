@@ -1,0 +1,7 @@
+[
+ {"wait": 1500}, {"click": "tab5"}, {"wait": 900},
+ {"click": "connectButton"}, {"wait": 1500},
+ {"click": "removeDevice-d-a1b2c3d4e5f6"}, {"wait": 1200}, {"shot": "03-after-remove"},
+ {"click": "connectSwitch"}, {"wait": 1200}, {"shot": "04-switched-off"},
+ {"click": "connectSwitch"}, {"wait": 1200}, {"shot": "05-switched-on-again"}
+]

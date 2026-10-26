@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Compiled directly against the game's own Managed/ DLLs (Unity Mono, mscorlib 4.0.0.0), so only APIs
+    that exist in the game's runtime can be used. Game DLLs live in mod/lib (gitignored, never committed).
+    Verified by building: see mod/README.md.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <AssemblyName>OniCompanionLink</AssemblyName>
+    <RootNamespace>OniCompanionLink</RootNamespace>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
+    <NoStdLib>true</NoStdLib>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LibDir Condition="'$(LibDir)' == ''">$(MSBuildThisFileDirectory)lib/</LibDir>
+    <FrameworkPathOverride>$(LibDir)</FrameworkPathOverride>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+    <Reference Include="netstandard"><HintPath>$(LibDir)netstandard.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="mscorlib"><HintPath>$(LibDir)mscorlib.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System"><HintPath>$(LibDir)System.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Core"><HintPath>$(LibDir)System.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(LibDir)Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp-firstpass"><HintPath>$(LibDir)Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(LibDir)Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(LibDir)0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(LibDir)UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(LibDir)UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(LibDir)UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ImageConversionModule"><HintPath>$(LibDir)UnityEngine.ImageConversionModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(LibDir)UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(LibDir)UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextCoreFontEngineModule"><HintPath>$(LibDir)UnityEngine.TextCoreFontEngineModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(LibDir)Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

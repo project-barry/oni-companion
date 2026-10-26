@@ -1,0 +1,1 @@
+[{"resize":[1240,900]},{"wait":2500},{"pushfile":"clients/barry/dev/screen-fonts.json","path":"x"},{"wait":1200},{"shot":"70-fallback"}]

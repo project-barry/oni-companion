@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-export.schema.json",
+  "title": "ONI Companion Link: gamedata export (v1, v1.3 additions)",
+  "description": "FROZEN. Written by the mod to <ONI user folder>/companion/export/gamedata-<build>-<dlcset>.json, where <dlcset> is the sorted active DLC ids joined by \"+\" (\"base\" when none). One file per active DLC set; the core merges files into a union. Every entry has id, name, dlc. `dlc` lists the DLC ids the entry needs (empty = base game). Entry objects may carry extra fields not listed here; consumers must ignore unknown fields. Units: mass kg, temperature Celsius, time seconds, power W (heat in kDTU/s as the game uses), rates per second unless named. v1.3 only ADDS optional fields (the core reads v1.2 files unchanged): `contract`, `requiresCore`, `dlcNames`, `overlays`, `tools`, `buildMenu`, `constants.toolNumbers`, and per building `unlocked`, `dlcActive`, `lockReason`, `materials[].candidates`/`label`, `ports[].name`/`description`/`greenText`/`redText`. `unlocked` is a snapshot at export time; the live file (`unlockedBuildings`, `research.completed`) is what the core trusts while the game runs.",
+  "type": "object",
+  "required": ["schema", "modVersion", "build", "dlcIds", "generatedAt", "buildings", "elements", "critters", "plants", "geysers", "foods", "medicines", "recipes", "techs", "traits", "skills", "rooms"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "modVersion": { "type": "string" },
+    "build": { "type": "integer" },
+    "dlcIds": { "type": "array", "items": { "type": "string" }, "description": "Active DLC ids during this export." },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "constants": { "type": "object", "description": "Game constants the mod can read. Optional.", "properties": { "dupeO2KgPerS": { "type": "number", "minimum": 0, "description": "Oxygen one duplicant breathes, kg per second." }, "stressStressedAt": { "type": "number" }, "stressBreakdownAt": { "type": "number" }, "caloriesHungryFraction": { "type": "number" }, "caloriesStarvingFraction": { "type": "number" }, "breathRetreatAmount": { "type": "number" }, "breathSuffocateAmount": { "type": "number" }, "bodyTempIdealC": { "type": "number" }, "bodyTempHypothermiaC": { "type": "number" }, "bodyTempHyperthermiaC": { "type": "number" }, "bodyTempFatalColdC": { "type": "number" }, "bodyTempFatalHotC": { "type": "number" }, "surroundingsColdC": { "type": "number" }, "surroundingsHotC": { "type": "number" }, "surroundingsScaldingC": { "type": "number" }, "toolNumbers": { "type": "object", "additionalProperties": { "type": "number" }, "description": "v1.3. Numbers the calculators need that the game defines (read from the game, never typed in the core), by camelCase name, e.g. dupeCo2KgPerS. dupeO2KgPerS stays a top-level constant." }, "dupeLimits": { "type": "object", "description": "Optional overrides for the core fallback limits (stress in percent, the rest fractions of the meter max).", "additionalProperties": { "type": "number" } } } },
+    "contract": { "type": "integer", "minimum": 1, "description": "v1.3. Contract level the mod was built for: 3 = v1.3 (overlay/tool/build commands). Absent = a mod before v1.3." },
+    "requiresCore": { "$ref": "#/$defs/VersionRange", "description": "v1.3. The core versions this mod works with; the core compares it with its own version (status modState version_mismatch)." },
+    "dlcNames": { "type": "object", "additionalProperties": { "type": "string" }, "description": "v1.3. DLC id -> the game's own display name, from the game's strings (STRINGS.UI.<X>.NAME), e.g. EXPANSION1_ID -> the Spaced Out! name. For every DLC id the game knows." },
+    "overlays": { "type": "array", "items": { "$ref": "#/$defs/Overlay" }, "description": "v1.3. Every overlay of the game, in the game's own order on its overlay bar." },
+    "tools": { "type": "array", "items": { "$ref": "#/$defs/PadTool" }, "description": "v1.3. Every action tool of the game, in the game's own order on its tool bar." },
+    "buildMenu": { "type": "array", "items": { "$ref": "#/$defs/MenuGroup" }, "description": "v1.3. The game's build menu: groups in the game's order, each listing building ids in the game's order." },
+    "researchTypes": { "type": "array", "items": { "$ref": "#/$defs/ResearchType" } },
+    "buildings": { "type": "array", "items": { "$ref": "#/$defs/Building" } },
+    "elements": { "type": "array", "items": { "$ref": "#/$defs/Element" } },
+    "critters": { "type": "array", "items": { "$ref": "#/$defs/Critter" } },
+    "plants": { "type": "array", "items": { "$ref": "#/$defs/Plant" } },
+    "geysers": { "type": "array", "items": { "$ref": "#/$defs/Geyser" } },
+    "foods": { "type": "array", "items": { "$ref": "#/$defs/Food" } },
+    "medicines": { "type": "array", "items": { "$ref": "#/$defs/Medicine" } },
+    "recipes": { "type": "array", "items": { "$ref": "#/$defs/Recipe" } },
+    "techs": { "type": "array", "items": { "$ref": "#/$defs/Tech" } },
+    "traits": { "type": "array", "items": { "$ref": "#/$defs/Trait" } },
+    "skills": { "type": "array", "items": { "$ref": "#/$defs/Skill" } },
+    "rooms": { "type": "array", "items": { "$ref": "#/$defs/Room" } }
+  },
+  "$defs": {
+    "Id": { "type": "string", "minLength": 1 },
+    "Dlc": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "Size": {
+      "type": "object", "required": ["w", "h"], "additionalProperties": false,
+      "properties": { "w": { "type": "integer", "minimum": 1 }, "h": { "type": "integer", "minimum": 1 } }
+    },
+    "Offset": {
+      "type": "object", "required": ["x", "y"], "additionalProperties": false,
+      "properties": { "x": { "type": "integer" }, "y": { "type": "integer" } }
+    },
+    "Amount": {
+      "description": "A mass flow or stock of an element or a tag. Exactly one of element / tag.",
+      "type": "object", "required": ["kg"],
+      "properties": {
+        "element": { "$ref": "#/$defs/Id" },
+        "tag": { "$ref": "#/$defs/Id", "description": "A material tag such as a category of elements." },
+        "kg": { "type": "number", "minimum": 0, "description": "Mass (stock), or kg per second when used as a rate." },
+        "tempC": { "type": "number" }
+      },
+      "oneOf": [ { "required": ["element"] }, { "required": ["tag"] } ]
+    },
+    "VersionRange": {
+      "description": "v1.3. Inclusive dotted version numbers, e.g. {\"min\":\"1.3.0\"}. A missing max means no upper limit.",
+      "type": "object", "required": ["min"], "additionalProperties": false,
+      "properties": { "min": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,3}$" }, "max": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,3}$" } }
+    },
+    "Overlay": {
+      "description": "v1.3. One overlay of the game. `id` is the game's overlay mode id and is what overlay_set takes as `mode`.",
+      "type": "object", "required": ["id", "name", "available"], "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" },
+        "hotkey": { "type": "string", "description": "The game's name of the key, as the game shows it, e.g. \"O\"; absent when none." },
+        "icon": { "type": "string", "description": "Art name of kind ui (the game's sprite), drawn by the art sync." },
+        "dlc": { "$ref": "#/$defs/Dlc" },
+        "available": { "type": "boolean", "description": "Usable in the game being played (its DLC is active and the game offers it)." }
+      }
+    },
+    "PadTool": {
+      "description": "v1.3. One action tool of the game (Dig, Cancel, Deconstruct, ...). `id` is the game's tool name and is what tool_select takes as `tool`.",
+      "type": "object", "required": ["id", "name", "available"], "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" },
+        "hotkey": { "type": "string" }, "icon": { "type": "string", "description": "Art name of kind ui." },
+        "dlc": { "$ref": "#/$defs/Dlc" },
+        "available": { "type": "boolean" },
+        "usesPriority": { "type": "boolean", "description": "The game shows its priority bar for this tool." }
+      }
+    },
+    "MenuGroup": {
+      "description": "v1.3. One tab of the game's build menu.",
+      "type": "object", "required": ["id", "name", "buildings"], "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/Id", "description": "Matches buildings[].category." }, "name": { "type": "string" },
+        "icon": { "type": "string" }, "hotkey": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "buildings": { "type": "array", "items": { "$ref": "#/$defs/Id" }, "description": "Building ids in the game's order." },
+        "subgroups": { "type": "array", "items": { "type": "object", "required": ["id", "name", "buildings"], "additionalProperties": false,
+          "properties": { "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "buildings": { "type": "array", "items": { "$ref": "#/$defs/Id" } } } },
+          "description": "The game's sub-categories, when it has them; `buildings` of the group still lists all." }
+      }
+    },
+    "ResearchType": {
+      "type": "object", "required": ["id", "name"], "additionalProperties": false,
+      "properties": { "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" } }
+    },
+    "Port": {
+      "type": "object", "required": ["kind", "direction"], "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["gas", "liquid", "solid", "power", "logic"] },
+        "direction": { "enum": ["in", "out"] },
+        "offset": { "$ref": "#/$defs/Offset" },
+        "maxKgPerS": { "type": "number", "minimum": 0 },
+        "maxW": { "type": "number", "minimum": 0 },
+        "name": { "type": "string", "description": "v1.3. The port's own name from the building definition (logic ports: e.g. the game's name of the signal)." },
+        "description": { "type": "string", "description": "v1.3. The game's description of the port (logic ports)." },
+        "greenText": { "type": "string", "description": "v1.3. What a green signal means (the game's active description of a logic port)." },
+        "redText": { "type": "string", "description": "v1.3. What a red signal means (the game's inactive description)." }
+      }
+    },
+    "Converter": {
+      "description": "ElementConverter / consumer / emitter group: what a building takes and gives per second while running.",
+      "type": "object", "required": ["inputs", "outputs"], "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "inputs": { "type": "array", "items": { "$ref": "#/$defs/Amount" } },
+        "outputs": { "type": "array", "items": { "$ref": "#/$defs/Amount" } }
+      }
+    },
+    "Building": {
+      "type": "object", "required": ["id", "name", "dlc", "category", "size"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" }, "effect": { "type": "string" },
+        "category": { "type": "string", "description": "Build-menu category id." },
+        "size": { "$ref": "#/$defs/Size" },
+        "hp": { "type": "number", "minimum": 0 },
+        "buildTimeS": { "type": "number", "minimum": 0 },
+        "materials": { "type": "array", "items": { "type": "object", "required": ["tags", "kg"], "additionalProperties": false,
+          "properties": { "tags": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Alternatives; any one satisfies the slot." }, "kg": { "type": "number", "minimum": 0 },
+            "label": { "type": "string", "description": "v1.3. The game's name of the slot (its material category), e.g. \"Metal Ore\"." },
+            "candidates": { "type": "array", "items": { "$ref": "#/$defs/Id" }, "description": "v1.3. Element ids the game's material picker can offer for this slot, in the game's order (discovered or not; see live worlds[].stock)." } } } },
+        "decor": { "type": "object", "required": ["value", "radius"], "additionalProperties": false,
+          "properties": { "value": { "type": "number" }, "radius": { "type": "number", "minimum": 0 } } },
+        "noise": { "type": "object", "required": ["value", "radius"], "additionalProperties": false,
+          "properties": { "value": { "type": "number" }, "radius": { "type": "number", "minimum": 0 } } },
+        "power": { "type": "object", "additionalProperties": false,
+          "properties": { "usesW": { "type": "number", "minimum": 0 }, "generatesW": { "type": "number", "minimum": 0 } } },
+        "heat": { "type": "object", "additionalProperties": false,
+          "properties": { "exhaustKDtuPerS": { "type": "number" }, "selfKDtuPerS": { "type": "number" } } },
+        "overheatC": { "type": "number" },
+        "ports": { "type": "array", "items": { "$ref": "#/$defs/Port" } },
+        "converters": { "type": "array", "items": { "$ref": "#/$defs/Converter" } },
+        "storage": { "type": "object", "required": ["capacityKg"], "additionalProperties": false, "properties": { "capacityKg": { "type": "number", "minimum": 0 } } },
+        "tech": { "type": ["string", "null"], "description": "Tech id that unlocks it; null when none." },
+        "unlocked": { "type": "boolean", "description": "v1.3. The game's own rule at export time: researched, or buildable without research." },
+        "dlcActive": { "type": "boolean", "description": "v1.3. The building's DLC is active in this game." },
+        "lockReason": { "type": "object", "required": ["techId", "techName"], "additionalProperties": false,
+          "description": "v1.3. Present when not unlocked: the tech that unlocks it, with the game's display name and cost.",
+          "properties": { "techId": { "$ref": "#/$defs/Id" }, "techName": { "type": "string" },
+            "cost": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "Research-type id -> points." } } }
+      }
+    },
+    "Transition": {
+      "type": "object", "required": ["tempC", "target"], "additionalProperties": false,
+      "properties": { "tempC": { "type": "number" }, "target": { "$ref": "#/$defs/Id", "description": "Element id." }, "targetKgRatio": { "type": "number", "minimum": 0 }, "secondary": { "$ref": "#/$defs/Id" } }
+    },
+    "Element": {
+      "type": "object", "required": ["id", "name", "dlc", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "state": { "enum": ["solid", "liquid", "gas", "vacuum"] },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "specificHeat": { "type": "number", "description": "DTU per g per K (the game's unit)." },
+        "thermalConductivity": { "type": "number" },
+        "molarMass": { "type": "number" },
+        "maxMass": { "type": "number" },
+        "hardness": { "type": "number" },
+        "highTransition": { "$ref": "#/$defs/Transition", "description": "What it becomes when heated." },
+        "lowTransition": { "$ref": "#/$defs/Transition", "description": "What it becomes when cooled." }
+      }
+    },
+    "Critter": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "diets": { "type": "array", "items": { "type": "object", "required": ["consumes", "produces"], "additionalProperties": false,
+          "properties": {
+            "consumes": { "type": "array", "items": { "$ref": "#/$defs/Amount" }, "description": "kg is kg per cycle at full ration." },
+            "produces": { "type": "array", "items": { "$ref": "#/$defs/Amount" }, "description": "kg is kg per cycle out." },
+            "caloriesPerCycle": { "type": "number", "minimum": 0 }
+          } } },
+        "temperatureC": { "type": "object", "additionalProperties": false,
+          "properties": { "idealLo": { "type": "number" }, "idealHi": { "type": "number" }, "lethalLo": { "type": "number" }, "lethalHi": { "type": "number" } } },
+        "lifespanCycles": { "type": "number", "minimum": 0 },
+        "egg": { "type": "object", "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/Id" }, "incubationCycles": { "type": "number", "minimum": 0 } } },
+        "morphs": { "type": "array", "items": { "$ref": "#/$defs/Id" } },
+        "drops": { "type": "array", "items": { "$ref": "#/$defs/Amount" } }
+      }
+    },
+    "Plant": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "growthCycles": { "type": "number", "minimum": 0 },
+        "temperatureC": { "type": "object", "additionalProperties": false,
+          "properties": { "idealLo": { "type": "number" }, "idealHi": { "type": "number" }, "lethalLo": { "type": "number" }, "lethalHi": { "type": "number" } } },
+        "pressureKg": { "type": "object", "additionalProperties": false, "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+        "atmosphere": { "type": "array", "items": { "$ref": "#/$defs/Id" }, "description": "Allowed element ids; empty = any." },
+        "irrigation": { "type": "array", "items": { "$ref": "#/$defs/Amount" } },
+        "fertilizer": { "type": "array", "items": { "$ref": "#/$defs/Amount" } },
+        "lightLux": { "type": "number", "minimum": 0 },
+        "yield": { "type": "array", "items": { "$ref": "#/$defs/Amount" } }
+      }
+    },
+    "Geyser": {
+      "type": "object", "required": ["id", "name", "dlc", "element"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "element": { "$ref": "#/$defs/Id" },
+        "tempC": { "type": "number" },
+        "rateKgPerS": { "type": "object", "required": ["min", "max"], "additionalProperties": false, "properties": { "min": { "type": "number", "minimum": 0 }, "max": { "type": "number", "minimum": 0 } } },
+        "eruptionIterationS": { "type": "object", "additionalProperties": false, "description": "Seconds of one erupting+idle cycle, range.", "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+        "eruptDurationFraction": { "type": "object", "additionalProperties": false, "description": "Fraction of an iteration spent erupting, range.", "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+        "activeCycles": { "type": "object", "additionalProperties": false, "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+        "dormantCycles": { "type": "object", "additionalProperties": false, "properties": { "min": { "type": "number" }, "max": { "type": "number" } } },
+        "activeFractionOfYear": { "type": "object", "additionalProperties": false, "properties": { "min": { "type": "number" }, "max": { "type": "number" } } }
+      }
+    },
+    "Food": {
+      "type": "object", "required": ["id", "name", "dlc", "kcal"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "kcal": { "type": "number", "minimum": 0, "description": "Per unit (kcal)." },
+        "quality": { "type": "integer" },
+        "spoilTimeS": { "type": ["number", "null"], "description": "null = never spoils." },
+        "effects": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Medicine": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "cures": { "type": "array", "items": { "type": "string" } },
+        "effect": { "type": "string" }
+      }
+    },
+    "Recipe": {
+      "type": "object", "required": ["id", "name", "dlc", "fabricator", "inputs", "outputs", "timeS"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "fabricator": { "$ref": "#/$defs/Id", "description": "Building id." },
+        "inputs": { "type": "array", "items": { "$ref": "#/$defs/Amount" }, "description": "kg is a stock here, not a rate." },
+        "outputs": { "type": "array", "items": { "$ref": "#/$defs/Amount" } },
+        "timeS": { "type": "number", "minimum": 0 }
+      }
+    },
+    "Tech": {
+      "type": "object", "required": ["id", "name", "dlc", "cost"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "cost": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "Research-type id -> points." },
+        "requires": { "type": "array", "items": { "$ref": "#/$defs/Id" }, "description": "Tech ids that must be done first." },
+        "unlocks": { "type": "array", "items": { "type": "object", "required": ["kind", "id"], "additionalProperties": false, "properties": { "kind": { "enum": ["building", "recipe", "food", "medicine", "plant", "critter"] }, "id": { "$ref": "#/$defs/Id" } } } }
+      }
+    },
+    "Trait": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "kind": { "enum": ["good", "bad", "neutral", "genetic", "congenital", "other"] }
+      }
+    },
+    "Skill": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "tier": { "type": "integer", "minimum": 0 },
+        "group": { "type": "string" },
+        "requires": { "type": "array", "items": { "$ref": "#/$defs/Id" } },
+        "unlocks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Room": {
+      "type": "object", "required": ["id", "name", "dlc"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" }, "name": { "type": "string" }, "dlc": { "$ref": "#/$defs/Dlc" },
+        "desc": { "type": "string" },
+        "effects": { "type": "array", "items": { "type": "string" } },
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "sizeRange": { "type": "object", "additionalProperties": false, "properties": { "minTiles": { "type": "integer" }, "maxTiles": { "type": "integer" } } }
+      }
+    }
+  }
+}

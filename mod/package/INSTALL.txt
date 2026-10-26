@@ -1,0 +1,20 @@
+ONI Companion Link: install by hand
+
+This is an unofficial companion mod for Oxygen Not Included, not affiliated with Klei. It only writes
+files next to your game (no network, nothing in your saves).
+
+Easiest: subscribe to "ONI Companion Link" on the Steam Workshop, or let the ONI Companion app
+install it ("Install the game mod" in its Settings).
+
+By hand:
+1. Close the game.
+2. Unpack this zip INTO the game's user folder, so that you end up with
+   <user folder>/mods/Local/OniCompanionLink/OniCompanionLink.dll
+   (create the mods/Local folders if they are missing). The user folder is
+     Windows:        Documents\Klei\OxygenNotIncluded
+     Linux (native): ~/.config/unity3d/Klei/Oxygen Not Included
+     Linux (Proton): <Steam library>/steamapps/compatdata/457140/pfx/drive_c/users/steamuser/Documents/Klei/OxygenNotIncluded
+   Simplest: copy the OniCompanionLink folder from this zip into mods/Local.
+3. Start the game, open the Mods menu, switch "ONI Companion Link" on, and restart the game.
+
+Do not have both this copy and a Workshop copy: both would load.

@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "title": "Buildings",
+  "subtitle": "6 buildings",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "build",
+    "gamedata",
+    "status"
+  ],
+  "blocks": [
+    {
+      "type": "group",
+      "title": "Base (2)",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthLamp"
+              },
+              "title": "Lamp",
+              "badge": "Synth Alpha Pack",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthLamp"
+                  }
+                }
+              ]
+            },
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthWireBridge"
+              },
+              "title": "Wire Bridge",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthWireBridge"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Automation (1)",
+      "collapsed": true,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthTrap"
+              },
+              "title": "Critter Trap",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthTrap"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Refinement (3)",
+      "collapsed": true,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthWidgetMaker"
+              },
+              "title": "Widget Maker",
+              "subtitle": "Needs research: Widgetry",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthWidgetMaker"
+                  },
+                  "enabled": false,
+                  "reason": "Needs research: Widgetry"
+                }
+              ]
+            },
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthPump"
+              },
+              "title": "Gas Pump",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthPump"
+                  }
+                }
+              ]
+            },
+            {
+              "ref": {
+                "kind": "building",
+                "id": "SynthBetaGizmo"
+              },
+              "title": "Beta Gizmo",
+              "subtitle": "Needs Synth Beta Pack.",
+              "badge": "Synth Beta Pack",
+              "actions": [
+                {
+                  "id": "build_select",
+                  "label": "Build",
+                  "args": {
+                    "buildingId": "SynthBetaGizmo"
+                  },
+                  "enabled": false,
+                  "reason": "Needs Synth Beta Pack."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filter": {
+    "placeholder": "Search buildings"
+  }
+}

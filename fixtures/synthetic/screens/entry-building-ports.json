@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "title": "Gas Pump",
+  "subtitle": "Building",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "nav": {
+    "back": "home"
+  },
+  "refreshOn": [
+    "gamedata",
+    "build",
+    "colony"
+  ],
+  "blocks": [
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "Base game",
+          "style": "dlc"
+        }
+      ]
+    },
+    {
+      "type": "picker",
+      "title": "Build with",
+      "slots": [
+        {
+          "label": "Metal",
+          "needKg": 60,
+          "options": [
+            {
+              "id": "SynthMetalA",
+              "name": "Metal A",
+              "needKg": 60,
+              "haveKg": 1240,
+              "enabled": true,
+              "selected": true
+            },
+            {
+              "id": "SynthMetalB",
+              "name": "Metal B",
+              "needKg": 60,
+              "haveKg": 80,
+              "enabled": true,
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "action": {
+        "id": "build_select",
+        "label": "Build",
+        "args": {
+          "buildingId": "SynthPump"
+        }
+      }
+    },
+    {
+      "type": "stats",
+      "title": "Basics",
+      "rows": [
+        {
+          "label": "Build menu",
+          "value": "Refinement"
+        },
+        {
+          "label": "Size",
+          "value": "2 x 2",
+          "unit": "tiles"
+        },
+        {
+          "label": "Power use",
+          "value": 240,
+          "unit": "W",
+          "hint": "While running"
+        }
+      ]
+    },
+    {
+      "type": "ports",
+      "title": "Flow",
+      "inputs": [
+        {
+          "label": "Gas in",
+          "rate": 500,
+          "unit": "g/s",
+          "conduit": "gas",
+          "note": "Max rate"
+        },
+        {
+          "label": "Power in",
+          "rate": 240,
+          "unit": "W",
+          "conduit": "power",
+          "note": "Max rate"
+        }
+      ],
+      "outputs": [
+        {
+          "label": "Gas out",
+          "rate": 500,
+          "unit": "g/s",
+          "conduit": "gas",
+          "note": "Max rate"
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Open on the ONI wiki",
+      "url": "https://oxygennotincluded.wiki.gg/wiki/Gas_Pump"
+    }
+  ]
+}

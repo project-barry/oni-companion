@@ -1,0 +1,9 @@
+{
+  "state": "idle",
+  "needed": true,
+  "neededReason": "no_pack",
+  "suggestedScope": "full",
+  "canStart": false,
+  "reason": "menu",
+  "fonts": "none"
+}

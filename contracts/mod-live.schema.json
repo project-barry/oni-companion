@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-live.schema.json",
+  "title": "ONI Companion Link: live.json (schema 1 and 2, v1.3 additions)",
+  "description": "FROZEN after P1 (v1.1). Schema 2 only adds fields: the core reads both 1 and 2. Written by the mod to <ONI user folder>/companion/live/live.json via write-tmp-then-rename. Written only when something changed, at most once per real second while unpaused, at once on pause / cycle change / new alert / save. When the colony unloads it writes state \"menu\". When state is \"running\" the fields listed under `if/then` are required. Units: mass kg, temperature Celsius, time seconds unless named otherwise.",
+  "type": "object",
+  "required": ["schema", "seq", "state", "writtenAt", "modVersion"],
+  "properties": {
+    "schema": { "enum": [1, 2], "description": "2 = v1.1 mod: dupe appearanceHash, statusItems, diseases, stamina, bodyTempC, attributes; resources as a categorized list." },
+    "seq": { "type": "integer", "minimum": 1, "description": "Increases by 1 on every write within one game session; may restart at 1 in a new session (the core also compares writtenAt)." },
+    "state": { "enum": ["running", "menu", "stopped"], "description": "menu: the game is at its main menu (rewritten every 60 s by mod 0.4.1+). stopped: the game quit (mod 0.4.1+; a crash writes nothing, readers go by writtenAt)." },
+    "writtenAt": { "type": "string", "format": "date-time" },
+    "modVersion": { "type": "string" },
+    "build": { "type": "integer", "description": "Game build number." },
+    "dlcIds": { "type": "array", "items": { "type": "string" }, "description": "Active DLC ids (game ids). Empty = base game." },
+    "colonyName": { "type": "string" },
+    "colonyGuid": { "type": "string" },
+    "cycle": { "type": "integer", "minimum": 0, "description": "Current cycle number, as the game shows it (starts at 1)." },
+    "timeOfDay": { "type": "number", "minimum": 0, "maximum": 1, "description": "Fraction of the 600 s cycle that has elapsed." },
+    "paused": { "type": "boolean" },
+    "speed": { "enum": [1, 2, 3], "description": "Game speed setting; keeps its value while paused." },
+    "activeWorldId": { "type": "integer", "description": "World the player is looking at; matches worlds[].id." },
+    "worlds": { "type": "array", "items": { "$ref": "#/$defs/World" } },
+    "contract": { "type": "integer", "minimum": 1, "description": "v1.3. Contract level the mod was built for (3 = v1.3). Absent = a mod before v1.3." },
+    "requiresCore": { "type": "object", "required": ["min"], "additionalProperties": false, "description": "v1.3. The core versions this mod works with (inclusive dotted numbers; no max = no upper limit).",
+      "properties": { "min": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,3}$" }, "max": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,3}$" } } },
+    "activeOverlay": { "type": ["string", "null"], "description": "v1.3. The game's active overlay mode id (an export overlays[].id); null = no overlay. Written at once when it changes, also when the player changes it in the game." },
+    "activeTool": { "type": ["string", "null"], "description": "v1.3. The game's active tool id (an export tools[].id); null = no tool (the normal select state). Written at once on change." },
+    "priority": { "description": "v1.3. The game's current priority setting for the next tool: 1..9, or the string \"emergency\". Written at once on change.",
+      "oneOf": [ { "type": "integer", "minimum": 1, "maximum": 9 }, { "const": "emergency" } ] },
+    "unlockedBuildings": { "type": "array", "items": { "type": "string" }, "description": "v1.3. Ids of the buildings the game lets the player build now (its own rule: researched or free). Rewritten when research finishes." },
+    "writeMs": { "type": "number", "minimum": 0, "description": "Main-thread time of this write, for the 2 ms budget." }
+  },
+  "if": { "properties": { "state": { "const": "running" } }, "required": ["state"] },
+  "then": { "required": ["build", "dlcIds", "colonyName", "colonyGuid", "cycle", "timeOfDay", "paused", "speed", "activeWorldId", "worlds"] },
+  "additionalProperties": false,
+  "$defs": {
+    "Gauge": {
+      "type": "object", "required": ["value", "max"], "additionalProperties": false,
+      "properties": { "value": { "type": "number" }, "max": { "type": "number", "minimum": 0 } }
+    },
+    "Duplicant": {
+      "type": "object",
+      "required": ["id", "name", "stress", "health", "calories", "breath", "chore", "skills", "traits"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Stable per duplicant within a colony. Schema 2: the game's instance id as a decimal string; it is what commands target ({kind:\"dupe\", id})." },
+        "appearanceHash": { "type": "string", "pattern": "^[0-9a-f]{8}$", "description": "Schema 2. Changes when hair, face, outfit or hat changes; names the portrait file." },
+        "name": { "type": "string" },
+        "stress": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percent." },
+        "health": { "$ref": "#/$defs/Gauge", "description": "Hit points." },
+        "calories": { "$ref": "#/$defs/Gauge", "description": "kcal." },
+        "breath": { "$ref": "#/$defs/Gauge", "description": "Game breath units (0..100)." },
+        "bladder": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percent." },
+        "morale": { "type": "object", "required": ["value", "required"], "additionalProperties": false,
+          "properties": { "value": { "type": "number" }, "required": { "type": "number" } } },
+        "chore": { "type": ["string", "null"], "description": "Current task, display text from the game; null when idle." },
+        "skills": { "type": "array", "items": { "type": "string" }, "description": "Mastered skill ids." },
+        "traits": { "type": "array", "items": { "type": "string" }, "description": "Trait ids." },
+        "assignedSkill": { "type": ["string", "null"], "description": "Selected job skill id." },
+        "statusItems": { "type": "array", "items": { "$ref": "#/$defs/StatusItem" }, "description": "Schema 2. The duplicant's active status items, the game's own. The core builds warning badges from these." },
+        "diseases": { "type": "array", "items": { "$ref": "#/$defs/Disease" }, "description": "Schema 2. Active diseases and sicknesses." },
+        "stamina": { "$ref": "#/$defs/Gauge", "description": "Schema 2. Stamina (sleepiness) 0..100." },
+        "bodyTempC": { "type": "number", "description": "Schema 2. Body temperature in Celsius." },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/Attribute" }, "description": "Schema 2. Skill attributes (Athletics, Digging, ...), the game's own names." }
+      }
+    },
+    "StatusItem": {
+      "type": "object", "required": ["id", "name", "severity"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "The game's status item id." },
+        "name": { "type": "string", "description": "Display text from the game." },
+        "severity": { "enum": ["bad", "minorBad", "neutral", "good"], "description": "The game's own notification type for this status item." }
+      }
+    },
+    "Disease": {
+      "type": "object", "required": ["id", "name"], "additionalProperties": false,
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" } }
+    },
+    "Attribute": {
+      "type": "object", "required": ["id", "name", "value"], "additionalProperties": false,
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "value": { "type": "number" } }
+    },
+    "ResourceItem": {
+      "description": "Schema 2. One row of the game's Resources panel for one world, in the game's own category and item order.",
+      "type": "object", "required": ["id", "name", "category", "amount", "unit"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Resource tag or element id (same ids as the schema 1 map)." },
+        "name": { "type": "string" },
+        "category": { "type": "string", "minLength": 1, "description": "The game's category name (Metal, Food, Liquids, ...). The list order is the game's order; the core never re-sorts categories." },
+        "amount": { "type": "number", "minimum": 0 },
+        "unit": { "enum": ["kg", "kcal", "units"] },
+        "kcal": { "type": "number", "minimum": 0, "description": "Food only: energy per unit, when known." }
+      }
+    },
+    "CritterCount": {
+      "type": "object", "required": ["id", "count"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Critter prefab id (matches a critter entry id)." },
+        "count": { "type": "integer", "minimum": 0 },
+        "tame": { "type": "integer", "minimum": 0, "description": "How many of count are tame." },
+        "eggs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "Alert": {
+      "type": "object", "required": ["id", "level", "text"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Stable while the alert lasts." },
+        "level": { "enum": ["info", "warning", "bad"] },
+        "text": { "type": "string" },
+        "cycle": { "type": "integer", "minimum": 0, "description": "Cycle it first appeared." },
+        "count": { "type": "integer", "minimum": 1, "description": "Grouped notifications." },
+        "title": { "type": "string", "description": "v1.2. The game's notification title, as shown in the alert list (may carry TextMeshPro markup like tooltipMarkup). `text` stays the plain-text form." },
+        "type": { "type": "string", "pattern": "^[A-Za-z]+$", "description": "v1.2. The game's own NotificationType, camelCased, written as the mod found it by decompiling (expected: bad, minorBad, neutral, good, event, messages, messageImportant, custom, tutorial, duplicantThreatening). `level` is the coarse mapping the v1.1 core already understands. The core never hard-codes behavior per type; it only picks a tone and an icon from it." },
+        "tooltipMarkup": { "type": "string", "description": "v1.2. The exact string the game's tooltip builds for this alert, with its TextMeshPro markup (<b>, <color>, <link>, <sprite>, line breaks). Built by the mod only when the set of alerts changes. The core turns it into spans. The mod wraps each distinct source line (the game's bullet-name lines) in <link=\"N\">...</link> (N = links[].index); the game itself has no per-line links." },
+        "links": { "type": "array", "items": { "$ref": "#/$defs/AlertLink" }, "description": "v1.2. One per highlighted (<link>) line of the tooltip, in order. `index` is what alert_activate {link} sends." },
+        "click": { "$ref": "#/$defs/AlertClick", "description": "v1.2. The main click result, read from the game's own notification object." },
+        "dismissable": { "type": "boolean", "description": "v1.2. True only when the game itself lets the player dismiss this alert. Absent = false." }
+      }
+    },
+    "AlertLink": {
+      "description": "v1.2. One highlighted line of an alert tooltip and what a click on it does in the game.",
+      "type": "object", "required": ["index", "label", "kind"], "additionalProperties": false,
+      "properties": {
+        "index": { "type": "integer", "minimum": 0, "description": "Position among the alert's links (0-based); the <link> id in tooltipMarkup is the same number." },
+        "label": { "type": "string", "description": "Plain text of the highlighted line." },
+        "kind": { "enum": ["focus", "screen", "none"], "description": "focus = the game moves the camera to a target (cycling like the game); screen = the game opens a screen." },
+        "target": { "type": "string", "description": "focus: display name of the thing the camera moves to; screen: a screen id from the list in AlertClick. Informational: the mod resolves the real target itself from the alert." }
+      }
+    },
+    "AlertClick": {
+      "description": "v1.2. What clicking the alert itself does in the game.",
+      "type": "object", "required": ["kind"], "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["focus", "screen", "none"] },
+        "target": { "type": "string", "description": "kind screen: one of research, skills, schedule, consumables, report, codex, starmap, vitals, jobs, resources, diagnostics, message (a message alert opens the game's message dialog), other (a custom callback that is not a management screen). The game's Codex toggle is reported as codex and its Jobs toggle as jobs; database and priorities are never emitted. Absent for focus (the mod picks the target) and none." }
+      }
+    },
+    "TechProgress": {
+      "type": "object", "required": ["tech", "points", "cost"], "additionalProperties": false,
+      "properties": {
+        "tech": { "type": "string", "description": "Tech id." },
+        "points": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "Research-type id -> points done." },
+        "cost": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "Research-type id -> points needed." }
+      }
+    },
+    "Research": {
+      "type": "object", "required": ["queue"], "additionalProperties": false,
+      "properties": {
+        "current": { "oneOf": [ { "$ref": "#/$defs/TechProgress" }, { "type": "null" } ] },
+        "queue": { "type": "array", "items": { "$ref": "#/$defs/TechProgress" }, "description": "In order, current first when there is one." },
+        "completed": { "type": "array", "items": { "type": "string" }, "description": "Completed tech ids." }
+      }
+    },
+    "Circuit": {
+      "type": "object", "required": ["id", "generatedW", "consumedW"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer" },
+        "generatedW": { "type": "number", "minimum": 0 },
+        "consumedW": { "type": "number", "minimum": 0 },
+        "batteryJ": { "type": "number", "minimum": 0, "description": "Joules stored." },
+        "batteryMaxJ": { "type": "number", "minimum": 0 },
+        "overloaded": { "type": "boolean" }
+      }
+    },
+    "World": {
+      "type": "object",
+      "required": ["id", "name", "dupes", "resources", "critters", "alerts", "research"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer", "minimum": 0 },
+        "name": { "type": "string" },
+        "isStarter": { "type": "boolean" },
+        "dupes": { "type": "array", "items": { "$ref": "#/$defs/Duplicant" } },
+        "resources": {
+          "description": "Schema 1: object, resource tag or element id -> kg available in this world. Schema 2: list of ResourceItem. The core accepts both.",
+          "oneOf": [
+            { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } },
+            { "type": "array", "items": { "$ref": "#/$defs/ResourceItem" } }
+          ]
+        },
+        "critters": { "type": "array", "items": { "$ref": "#/$defs/CritterCount" } },
+        "alerts": { "type": "array", "items": { "$ref": "#/$defs/Alert" } },
+        "research": { "$ref": "#/$defs/Research" },
+        "stock": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "v1.3. Element id -> kg available in this world for building, from the same inventory the game's material picker uses. Only elements that are a candidate for some building material slot (export materials[].candidates). Absent = not known." },
+        "power": { "type": "array", "items": { "$ref": "#/$defs/Circuit" }, "description": "Omit when not cheap to gather." }
+      }
+    }
+  }
+}

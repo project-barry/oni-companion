@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "title": "Settings",
+  "refreshOn": [
+    "settings"
+  ],
+  "blocks": [
+    {
+      "type": "form",
+      "tool": "settings",
+      "title": "Colony",
+      "submitLabel": "Save",
+      "endpoint": "/settings",
+      "fields": [
+        {
+          "kind": "toggle",
+          "name": "zoomToDupeOnSelect",
+          "label": "Zoom to duplicant when selected",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Game"
+    },
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Game found",
+          "value": "Yes",
+          "tone": "good"
+        },
+        {
+          "label": "Game build",
+          "value": 1
+        },
+        {
+          "label": "DLC installed",
+          "value": 1
+        },
+        {
+          "label": "DLC with numbers",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Companion Link mod"
+    },
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Game mod",
+          "value": "No live data",
+          "tone": "warn"
+        },
+        {
+          "label": "Version",
+          "value": "0.4.0"
+        }
+      ]
+    },
+    {
+      "type": "notice",
+      "level": "info",
+      "text": "The game is not sending data."
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "1. Start Oxygen Not Included and load a colony."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "2. If the game is already running and this stays, open the game's Player.log and look for lines with OniCompanionLink."
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Install the game mod",
+          "subtitle": "Copies the mod into the game's mods folder. Nothing else is changed.",
+          "actions": [
+            {
+              "id": "mod_install",
+              "label": "Install the game mod",
+              "args": {
+                "confirm": true
+              },
+              "confirm": "Copy ONI Companion Link into /home/synth/Klei/OxygenNotIncluded/mods/Local/OniCompanionLink?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Colony"
+    },
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Source",
+          "value": "none"
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "title": "Data cache",
+      "rows": [
+        {
+          "label": "State",
+          "value": "ready",
+          "tone": "good"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "About"
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "ONI Companion 1.3.0. An unofficial companion for Oxygen Not Included. Not affiliated with Klei Entertainment. All game data is read from your own copy of the game while you use the app."
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Oxygen Not Included on Steam",
+      "url": "https://store.steampowered.com/app/457140"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "seq": 7,
+  "createdAt": "2026-01-01T12:00:01Z",
+  "type": "reset_identity",
+  "confirm": true
+}

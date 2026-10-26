@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "bad_code",
+    "message": "That code is wrong or has expired."
+  }
+}

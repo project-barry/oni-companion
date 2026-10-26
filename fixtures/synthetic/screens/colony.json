@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "title": "Synth Colony",
+  "subtitle": "Cycle 12, Home Asteroid",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony"
+  ],
+  "blocks": [
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "Cycle",
+          "value": 12
+        },
+        {
+          "label": "Time of day",
+          "value": "42%"
+        },
+        {
+          "label": "Speed",
+          "value": "2x"
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "title": "Duplicants",
+      "cards": [
+        {
+          "title": "Ada",
+          "subtitle": "Mining",
+          "tone": "good",
+          "meters": [
+            {
+              "label": "Stress",
+              "value": 15,
+              "max": 100,
+              "unit": "%",
+              "tone": "good"
+            },
+            {
+              "label": "Calories",
+              "value": 3000,
+              "max": 4000,
+              "unit": "kcal"
+            }
+          ]
+        },
+        {
+          "title": "Bo",
+          "subtitle": "Idle",
+          "tone": "warn",
+          "stats": [
+            {
+              "label": "Breath",
+              "value": 80,
+              "unit": "%"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "label": "Research: Widgetry",
+      "value": 30,
+      "max": 100,
+      "unit": "pts"
+    },
+    {
+      "type": "list",
+      "title": "Alerts",
+      "items": [
+        {
+          "title": "Low air",
+          "badge": "bad",
+          "tone": "bad"
+        }
+      ],
+      "empty": "No alerts."
+    }
+  ],
+  "raw": {
+    "source": "mod-live",
+    "asOf": "2026-01-01T12:00:00Z",
+    "state": "running",
+    "colonyName": "Synth Colony",
+    "cycle": 12,
+    "timeOfDay": 0.42,
+    "paused": false,
+    "speed": 2,
+    "activeWorldId": 0,
+    "worlds": []
+  }
+}

@@ -1,0 +1,119 @@
+[
+ {
+  "resize": [
+   1240,
+   1500
+  ]
+ },
+ {
+  "wait": 1200
+ },
+ {
+  "click": "syncHide"
+ },
+ {
+  "wait": 400
+ },
+ {
+  "wait": 1200
+ },
+ {
+  "shot": "01-colony"
+ },
+ {
+  "hold": "alert-a3",
+  "ms": 700
+ },
+ {
+  "shot": "02-revealed-a3"
+ },
+ {
+  "hold": "alert-a1",
+  "ms": 700
+ },
+ {
+  "shot": "03-notdismissable-a1"
+ },
+ {
+  "clickAt": [
+   620,
+   1300
+  ]
+ },
+ {
+  "wait": 400
+ },
+ {
+  "shot": "04-hidden"
+ },
+ {
+  "hold": "alert-a3",
+  "ms": 700
+ },
+ {
+  "click": "speed-speed3"
+ },
+ {
+  "wait": 150
+ },
+ {
+  "shot": "05-pending"
+ },
+ {
+  "wait": 1300
+ },
+ {
+  "shot": "06-confirmed"
+ },
+ {
+  "click": "speed-pause"
+ },
+ {
+  "wait": 1400
+ },
+ {
+  "shot": "07-paused"
+ },
+ {
+  "click": "alert-a1"
+ },
+ {
+  "wait": 900
+ },
+ {
+  "shot": "08-alert-page"
+ },
+ {
+  "call": "pop"
+ },
+ {
+  "wait": 300
+ },
+ {
+  "click": "alert-a2"
+ },
+ {
+  "wait": 900
+ },
+ {
+  "shot": "09-alert-page-a2"
+ },
+ {
+  "click": "action-alert_dismiss"
+ },
+ {
+  "wait": 1500
+ },
+ {
+  "shot": "10-after-dismiss"
+ },
+ {
+  "click": "tab1"
+ },
+ {
+  "wait": 600
+ },
+ {
+  "shot": "11-resources"
+ }
+]

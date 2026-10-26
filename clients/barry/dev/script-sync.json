@@ -1,0 +1,9 @@
+[
+ {"wait": 1200}, {"shot": "01-sync-needed"},
+ {"click": "syncStart"}, {"wait": 2500}, {"shot": "02-sync-running"},
+ {"click": "syncHide"}, {"wait": 600}, {"shot": "03-hidden-chip"},
+ {"click": "syncChip"}, {"wait": 7500}, {"shot": "04-sync-done"},
+ {"click": "syncHide"}, {"wait": 400},
+ {"click": "tab4"}, {"wait": 900}, {"shot": "05-settings"},
+ {"click": "resyncButton"}, {"wait": 700}, {"shot": "06-resync-from-settings"}
+]

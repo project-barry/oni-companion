@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pairing.schema.json",
+  "title": "ONI Companion v1.4: pairing files, QR payload, mDNS TXT record, local-mode marker",
+  "description": "Files between the service and the mod (the mod opens no network connection and starts no process), the text in the pairing QR code, the DNS-SD TXT record, and the Android local-mode marker. Atomic rules are the commands' rules: write a temp file that does not match the final name pattern, then rename. ADDITIVE: nothing in v1..v1.3 changes.",
+  "$defs": {
+    "State": {
+      "description": "<ONI user folder>/companion/pairing/state.json. Written by the SERVICE (never by the mod) whenever something in it changes and once at start; deleted by the service when it exits normally (after a crash the file stays: the mod treats it as 'service not running' when `pid` is gone or updatedAt is older than 15 s while live.json is also stale). The mod only reads it (FileSystemWatcher) and draws the Connect a phone window from it. `enabled` false => addresses [], code null, qrText null. Same shape as api.schema.json ConnectState plus the file fields.",
+      "type": "object",
+      "required": ["schema", "updatedAt", "pid", "enabled", "plainHttp", "identity", "addresses", "devices", "lastRequest"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "pid": { "type": "integer", "minimum": 1, "description": "The service process." },
+        "enabled": { "type": "boolean" },
+        "listening": { "type": "boolean" },
+        "port": { "type": ["integer", "null"] },
+        "plainHttp": { "type": "boolean" },
+        "plainHttpPort": { "type": ["integer", "null"] },
+        "identity": { "$ref": "api.schema.json#/$defs/Identity" },
+        "addresses": { "type": "array", "items": { "$ref": "api.schema.json#/$defs/ConnectAddress" } },
+        "code": { "oneOf": [ { "$ref": "api.schema.json#/$defs/PairingCode" }, { "type": "null" } ] },
+        "qrText": { "type": ["string", "null"] },
+        "devices": { "type": "array", "items": { "$ref": "api.schema.json#/$defs/PairedDevice" } },
+        "plainHttpNote": { "type": ["string", "null"] },
+        "lastRequest": { "description": "Result of the newest request file the service handled; null before the first. The mod shows `message` when failed.",
+          "oneOf": [ { "type": "null" }, { "type": "object", "required": ["seq", "state"], "additionalProperties": false,
+            "properties": { "seq": { "type": "integer", "minimum": 1 }, "state": { "enum": ["done", "failed"] }, "message": { "type": "string" } } } ] }
+      }
+    },
+    "Request": {
+      "description": "<ONI user folder>/companion/pairing/requests/req-<seq>.json. Written by the MOD (temp file then rename) when the user acts in the Connect a phone window. The service picks it up with a file watcher (and one scan at start), does it, records the result in state.json lastRequest, then deletes the file. A request whose createdAt is older than 10 s, or whose seq is not above the newest handled seq, is dropped (failed \"Request too old\" in lastRequest). The mod picks seq = (lastRequest.seq from state.json, or the highest req file, whichever is larger) + 1. The service never acts on paths, addresses or code text from a request. Allow list: set_enabled, new_code, remove_device, reset_identity, set_plain_http.",
+      "oneOf": [
+        { "$ref": "#/$defs/ReqSetEnabled" }, { "$ref": "#/$defs/ReqNewCode" }, { "$ref": "#/$defs/ReqRemoveDevice" },
+        { "$ref": "#/$defs/ReqResetIdentity" }, { "$ref": "#/$defs/ReqSetPlainHttp" }
+      ]
+    },
+    "ReqSetEnabled": {
+      "type": "object", "required": ["schema", "seq", "createdAt", "type", "enabled"], "additionalProperties": false,
+      "properties": { "schema": { "const": 1 }, "seq": { "type": "integer", "minimum": 1 }, "createdAt": { "type": "string", "format": "date-time", "description": "UTC." },
+        "type": { "const": "set_enabled" }, "enabled": { "type": "boolean", "description": "The Connect a phone switch. On: open the TLS listener, announce mDNS, make a code. Off: close both at once and drop the code." } }
+    },
+    "ReqNewCode": {
+      "type": "object", "required": ["schema", "seq", "createdAt", "type"], "additionalProperties": false,
+      "properties": { "schema": { "const": 1 }, "seq": { "type": "integer", "minimum": 1 }, "createdAt": { "type": "string", "format": "date-time" },
+        "type": { "const": "new_code" } }
+    },
+    "ReqRemoveDevice": {
+      "type": "object", "required": ["schema", "seq", "createdAt", "type", "deviceId"], "additionalProperties": false,
+      "properties": { "schema": { "const": 1 }, "seq": { "type": "integer", "minimum": 1 }, "createdAt": { "type": "string", "format": "date-time" },
+        "type": { "const": "remove_device" }, "deviceId": { "type": "string", "pattern": "^d-[0-9a-f]{12}$", "description": "state.json devices[].deviceId. Its token stops working at once (next request 401). Unknown id = failed \"Device not found\"." } }
+    },
+    "ReqResetIdentity": {
+      "type": "object", "required": ["schema", "seq", "createdAt", "type", "confirm"], "additionalProperties": false,
+      "properties": { "schema": { "const": 1 }, "seq": { "type": "integer", "minimum": 1 }, "createdAt": { "type": "string", "format": "date-time" },
+        "type": { "const": "reset_identity" }, "confirm": { "const": true, "description": "The window asks first; a request without confirm true is failed \"Not confirmed\"." } }
+    },
+    "ReqSetPlainHttp": {
+      "type": "object", "required": ["schema", "seq", "createdAt", "type", "enabled"], "additionalProperties": false,
+      "properties": { "schema": { "const": 1 }, "seq": { "type": "integer", "minimum": 1 }, "createdAt": { "type": "string", "format": "date-time" },
+        "type": { "const": "set_plain_http" }, "enabled": { "type": "boolean", "description": "The iOS plain-HTTP choice. Default off; stays off after Reset identity. Needs set_enabled on to have any effect." } }
+    },
+    "QrPayload": {
+      "description": "The text inside the pairing QR code, as compact JSON (separators , and :, UTF-8, at most 400 bytes). The Android app scans it; a later iOS web app gets the same data from a link. `v` is the payload version: a reader refuses a higher v with \"Update the app\". The code is one-time and expires (`x`).",
+      "type": "object", "required": ["v", "t", "a", "p", "c", "i", "f", "n", "x"], "additionalProperties": false,
+      "properties": {
+        "v": { "const": 1 },
+        "t": { "const": "onic-pair" },
+        "a": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "type": "string", "maxLength": 80 }, "description": "Addresses to try in order (LAN first, then Tailscale)." },
+        "p": { "type": "integer", "minimum": 1024, "maximum": 65535, "description": "TLS port." },
+        "c": { "type": "string", "pattern": "^[A-HJKMNP-Z2-9]{8}$", "description": "The pairing code without the dash." },
+        "i": { "type": "string", "description": "instanceId (a label)." },
+        "f": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Certificate fingerprint to pin." },
+        "n": { "type": "string", "description": "Device name (adjective-animal)." },
+        "x": { "type": "string", "format": "date-time", "description": "UTC expiry of the code." }
+      }
+    },
+    "MdnsTxt": {
+      "description": "DNS-SD record `_onicompanion._tcp` while Connect a phone is on (service instance name \"ONI Companion on <name>\", port = TLS port). EXACTLY these four TXT keys, nothing else: no colony, no player, no address, no code, no fingerprint. Everything in it is a hint and is never trusted.",
+      "type": "object", "required": ["id", "name", "api", "core"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "instanceId." },
+        "name": { "type": "string", "pattern": "^[a-z]{2,20}-[a-z]{2,20}$" },
+        "api": { "type": "string", "pattern": "^[0-9]+$", "description": "API version, \"1\"." },
+        "core": { "type": "string", "description": "coreVersion." }
+      }
+    },
+    "LocalMarker": {
+      "description": "Android local mode. <shared storage>/ONICompanion/marker.json, written by the APK when the user sets up an emulator. The mod, running in the emulator, finds it by probing the mapped drives (the fixed folder name ONICompanion on each drive letter D: to Z:, then the emulator's documented extra mount) and, when found, writes its whole companion folder (live, export, art, acks, ...) to <drive>:\\ONICompanion\\companion\\ instead of the user folder, and reads commands from <drive>:\\ONICompanion\\companion\\commands\\. The APK reads and writes that same folder under the same file rules as the core on a normal device (commands and acks as in mod-command / mod-ack; the same freshness rule as Status.mod.liveFresh). The mod never takes a path from a command or from this file.",
+      "type": "object", "required": ["schema", "app", "createdAt"], "additionalProperties": false,
+      "properties": {
+        "schema": { "const": 1 },
+        "app": { "const": "oni-companion" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "appVersion": { "type": "string" },
+        "emulator": { "type": "string", "maxLength": 40, "description": "Which emulator app the user said they use; display only." }
+      }
+    }
+  }
+}

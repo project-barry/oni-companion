@@ -1,0 +1,15 @@
+{
+  "values": {
+    "mass": {
+      "value": 5,
+      "unit": "kg"
+    },
+    "element": "SynthWidgetium",
+    "useKelvin": false,
+    "mode": "heat",
+    "deltaT": {
+      "value": 60,
+      "unit": "C"
+    }
+  }
+}

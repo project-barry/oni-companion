@@ -1,0 +1,5 @@
+[
+ {"pushfile":"clients/barry/dev/screen-action-menu.json"},{"click":"action-focus"},{"wait":500},{"shot":"50-menu-503"},
+ {"call":"pop"},
+ {"pushfile":"clients/barry/dev/screen-action-ghost.json"},{"click":"action-focus"},{"wait":1500},{"shot":"51-ghost-failed"}
+]

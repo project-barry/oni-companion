@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony",
+    "action"
+  ],
+  "title": "Synthetic reminder",
+  "nav": {
+    "back": "home"
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "A reminder that "
+        },
+        {
+          "type": "plain",
+          "text": "can be dismissed",
+          "color": "textDim"
+        },
+        {
+          "type": "plain",
+          "text": "."
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Dismiss",
+          "subtitle": "Dismisses it in the game too",
+          "actions": [
+            {
+              "id": "alert_dismiss",
+              "label": "Dismiss",
+              "args": {
+                "alertId": "a3"
+              },
+              "danger": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony",
+    "action"
+  ],
+  "title": "Low air (2)",
+  "subtitle": "Cycle 12",
+  "nav": {
+    "back": "home"
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "bold",
+          "text": "Low air",
+          "color": "negative"
+        },
+        {
+          "type": "plain",
+          "text": "\n"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "Ada",
+          "color": "alertBadText",
+          "action": {
+            "id": "alert_activate",
+            "label": "Ada",
+            "args": {
+              "alertId": "a1",
+              "link": 0
+            }
+          }
+        },
+        {
+          "type": "plain",
+          "text": " is holding her breath\n"
+        },
+        {
+          "type": "plain",
+          "text": "Bea",
+          "color": "alertBadText",
+          "action": {
+            "id": "alert_activate",
+            "label": "Bea",
+            "args": {
+              "alertId": "a1",
+              "link": 1
+            }
+          }
+        },
+        {
+          "type": "plain",
+          "text": " is short of oxygen\n"
+        },
+        {
+          "type": "plain",
+          "text": " Build an oxygen source",
+          "icon": "/api/v1/art/ui/sprite-oxygen"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        {
+          "title": "Open in game",
+          "subtitle": "Moves the camera, like a click in the game",
+          "actions": [
+            {
+              "id": "alert_activate",
+              "label": "Open in game",
+              "args": {
+                "alertId": "a1"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

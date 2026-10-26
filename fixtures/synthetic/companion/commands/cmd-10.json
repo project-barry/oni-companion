@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "seq": 10,
+  "createdAt": "2026-01-01T12:00:00Z",
+  "type": "alert_dismiss",
+  "alertId": "a3"
+}

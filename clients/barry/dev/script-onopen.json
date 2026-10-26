@@ -1,0 +1,10 @@
+[
+ {"resize":[1240,1800]},{"wait":800},
+ {"click":"card-Ada"},{"wait":3500},{"shot":"40-onopen-ada"},
+ {"call":"openRef","args":[{"kind":"trait","id":"SynthQuick"}]},{"wait":700},
+ {"call":"pop"},{"wait":1500},
+ {"click":"tab1"},{"wait":500},{"click":"tab0"},{"wait":1500},
+ {"shot":"41-back-on-ada"},
+ {"call":"pop"},{"wait":400},
+ {"click":"card-Ada"},{"wait":800}
+]

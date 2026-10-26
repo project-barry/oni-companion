@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "title": "All ref kinds",
+  "blocks": [
+    {
+      "type": "list",
+      "items": [
+        {
+          "ref": {
+            "kind": "element",
+            "id": "Synth_element"
+          },
+          "title": "element"
+        },
+        {
+          "ref": {
+            "kind": "building",
+            "id": "Synth_building"
+          },
+          "title": "building"
+        },
+        {
+          "ref": {
+            "kind": "critter",
+            "id": "Synth_critter"
+          },
+          "title": "critter"
+        },
+        {
+          "ref": {
+            "kind": "plant",
+            "id": "Synth_plant"
+          },
+          "title": "plant"
+        },
+        {
+          "ref": {
+            "kind": "geyser",
+            "id": "Synth_geyser"
+          },
+          "title": "geyser"
+        },
+        {
+          "ref": {
+            "kind": "food",
+            "id": "Synth_food"
+          },
+          "title": "food"
+        },
+        {
+          "ref": {
+            "kind": "medicine",
+            "id": "Synth_medicine"
+          },
+          "title": "medicine"
+        },
+        {
+          "ref": {
+            "kind": "recipe",
+            "id": "Synth_recipe"
+          },
+          "title": "recipe"
+        },
+        {
+          "ref": {
+            "kind": "tech",
+            "id": "Synth_tech"
+          },
+          "title": "tech"
+        },
+        {
+          "ref": {
+            "kind": "trait",
+            "id": "Synth_trait"
+          },
+          "title": "trait"
+        },
+        {
+          "ref": {
+            "kind": "skill",
+            "id": "Synth_skill"
+          },
+          "title": "skill"
+        },
+        {
+          "ref": {
+            "kind": "room",
+            "id": "Synth_room"
+          },
+          "title": "room"
+        },
+        {
+          "ref": {
+            "kind": "codex",
+            "id": "Synth_codex"
+          },
+          "title": "codex"
+        },
+        {
+          "ref": {
+            "kind": "dupe",
+            "id": "d1"
+          },
+          "title": "dupe"
+        }
+      ]
+    }
+  ]
+}

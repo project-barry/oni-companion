@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-art-manifest.schema.json",
+  "title": "ONI Companion Link: companion/art/manifest.json (v1.2)",
+  "description": "Written by the mod, with write-tmp-then-rename, after the PNGs it lists exist. Files live at companion/art/<path>. Art is rendered from the running game on the user's device; none ships in the repo or the app. v1.2: ON DEMAND (`onDemand` true): there is no catalog run; catalog files are drawn when the core sends an `art_request` command and are kept per game build; the manifest is rewritten at most once a second while images are being drawn (at once for a portrait). Duplicant portraits are drawn for the loaded colony right after the world loads and again when appearanceHash changes (at most one per second). The core serves them as GET /api/v1/art/<kind>/<id> and 404s anything not listed or whose file is missing.",
+  "type": "object",
+  "required": [
+    "schema",
+    "modVersion",
+    "build",
+    "dlcIds",
+    "writtenAt",
+    "files"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": 1
+    },
+    "modVersion": {
+      "type": "string"
+    },
+    "build": {
+      "type": "integer"
+    },
+    "dlcIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "writtenAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "catalogComplete": {
+      "type": "boolean",
+      "description": "Mod 0.2.1 and older only (a catalog run). Not written from 0.2.2."
+    },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mod 0.2.1 and older only. Not written from 0.2.2 (frame times go to Player.log).",
+      "properties": {
+        "totalMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "worstFrameMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/File"
+      }
+    },
+    "onDemand": {
+      "type": "boolean",
+      "description": "True when the mod draws catalog art only on request (`art_request`). The core adds art URLs for items without an image yet only when this is true."
+    },
+    "renderRev": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Revision of how images are drawn; images of another revision are drawn again. Absent = 1."
+    }
+  },
+  "$defs": {
+    "ArtKind": {
+      "description": "building, element, critter, plant, seed, egg, food, medicine, item (other resources) = catalog, 128 px. dupe = duplicant portrait, 256 px. ui = theme 9-slice images (listed in the theme, not here).",
+      "enum": [
+        "building",
+        "element",
+        "critter",
+        "plant",
+        "seed",
+        "egg",
+        "food",
+        "medicine",
+        "item",
+        "dupe"
+      ]
+    },
+    "File": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "path",
+        "size",
+        "sha256",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ArtKind"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The game's id (prefab, element or tag id); for dupe, live.json duplicants[].id."
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^[0-9]+/[a-z]+/[^/\\\\]+\\.png$",
+          "description": "<build>/<kind>/<id>[-<appearanceHash>].png, relative to companion/art/."
+        },
+        "appearanceHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}$",
+          "description": "dupe only: the live.json hash this portrait shows. The core serves the entry whose hash matches the dupe's current hash, else the newest."
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Bytes."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "srcKey": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{16}$",
+          "description": "Catalog images: a stable fingerprint (FNV-1a 64) of the game asset the image was drawn from (kind, sprite name, atlas texture name and size, sprite rectangle, tint), computed without drawing. Equal key = same art in the game. Optional; absent on older images."
+        }
+      }
+    }
+  }
+}

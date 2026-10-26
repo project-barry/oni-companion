@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "modVersion": "0.3.0",
+  "state": "done",
+  "scope": "full",
+  "build": 100001,
+  "dlcIds": [
+    "DLC_ALPHA_ID"
+  ],
+  "done": 1033,
+  "total": 1033,
+  "current": null,
+  "errors": 2,
+  "lastError": "item: SynthTag has no image",
+  "stages": [
+    {
+      "name": "art",
+      "state": "done"
+    },
+    {
+      "name": "theme",
+      "state": "done"
+    },
+    {
+      "name": "fonts",
+      "state": "done"
+    }
+  ],
+  "gamePausedBySync": false,
+  "startedAt": "2026-01-01T12:00:00Z",
+  "updatedAt": "2026-01-01T12:00:00Z",
+  "elapsedMs": 138800,
+  "worstFrameMs": 61.5
+}

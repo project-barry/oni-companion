@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "title": "Widget Maker",
+  "subtitle": "Building",
+  "source": "mod-export",
+  "asOf": "2026-01-01T12:00:00Z",
+  "nav": {
+    "back": {
+      "kind": "tech",
+      "id": "SynthWidgetry"
+    }
+  },
+  "refreshOn": [
+    "gamedata"
+  ],
+  "blocks": [
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "Base game",
+          "style": "dlc"
+        },
+        {
+          "label": "Production",
+          "style": "category"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "Makes widgets from "
+        },
+        {
+          "type": "ref",
+          "ref": {
+            "kind": "element",
+            "id": "SynthWidgetium"
+          },
+          "text": "Widgetium"
+        },
+        {
+          "type": "plain",
+          "text": "."
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "title": "Basics",
+      "rows": [
+        {
+          "label": "Size",
+          "value": "3 x 2"
+        },
+        {
+          "label": "Power",
+          "value": 120,
+          "unit": "W",
+          "hint": "While running"
+        }
+      ]
+    },
+    {
+      "type": "ports",
+      "title": "Flow",
+      "inputs": [
+        {
+          "label": "Input",
+          "element": {
+            "kind": "element",
+            "id": "SynthWidgetium"
+          },
+          "rate": 0.5,
+          "unit": "kg/s",
+          "conduit": "solid"
+        },
+        {
+          "label": "Power",
+          "rate": 120,
+          "unit": "W",
+          "conduit": "power"
+        }
+      ],
+      "outputs": [
+        {
+          "label": "Output",
+          "element": {
+            "kind": "element",
+            "id": "SynthGas"
+          },
+          "rate": 0.1,
+          "unit": "kg/s",
+          "conduit": "gas",
+          "note": "Hot"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Research",
+      "collapsed": true,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "ref": {
+                "kind": "tech",
+                "id": "SynthWidgetry"
+              },
+              "title": "Widgetry"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

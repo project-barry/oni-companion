@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "seq": 6,
+  "state": "failed",
+  "message": "Duplicant not found",
+  "ackedAt": "2026-01-01T12:00:00Z"
+}

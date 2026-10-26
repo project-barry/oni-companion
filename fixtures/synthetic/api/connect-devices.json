@@ -1,0 +1,20 @@
+{
+  "devices": [
+    {
+      "deviceId": "d-a1b2c3d4e5f6",
+      "label": "Pixel 9",
+      "platform": "android",
+      "pairedAt": "2026-01-01T11:00:00Z",
+      "lastSeen": "2026-01-01T11:59:30Z",
+      "transport": "tls"
+    },
+    {
+      "deviceId": "d-0123456789ab",
+      "label": "iPhone",
+      "platform": "ios",
+      "pairedAt": "2026-01-01T11:30:00Z",
+      "lastSeen": null,
+      "transport": "http"
+    }
+  ]
+}

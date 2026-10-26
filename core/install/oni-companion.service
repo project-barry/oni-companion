@@ -1,0 +1,15 @@
+[Unit]
+Description=ONI Companion service (runs only while Oxygen Not Included runs)
+# The path unit starts this on the mod's first write after the game launches. The service finds the game
+# process, waits on it, and exits by itself when the game quits or crashes (or at once if no game is found).
+# Many starts in a row are normal, so no start limit.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Environment=PYTHONPATH=%h/.local/share/oni-companion/core
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m oni_companion --mode standalone
+Restart=no
+# Exit 0 is the normal end (game ended, or no game). A stop by systemd sends SIGTERM, which is also clean.
+SuccessExitStatus=0 SIGTERM

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mod-sync-status.schema.json",
+  "title": "ONI Companion Link: companion/sync/status.json (v1.2)",
+  "description": "Written by the mod (write-tmp-then-rename) while a sync_assets command runs, about every 250 ms, and once more when it ends. The core turns it into GET /api/v1/sync and a `sync` event. Nothing in it is game art; it only counts. The mod pauses the game while state is running and restores the previous speed (and paused flag) when it ends, also when it fails.",
+  "type": "object",
+  "required": ["schema", "modVersion", "state", "scope", "done", "total", "updatedAt"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "modVersion": { "type": "string" },
+    "state": { "enum": ["idle", "running", "done", "failed"] },
+    "scope": { "enum": ["full", "missing"] },
+    "build": { "type": "integer" },
+    "dlcIds": { "type": "array", "items": { "type": "string" } },
+    "done": { "type": "integer", "minimum": 0 },
+    "total": { "type": "integer", "minimum": 0, "description": "Items to draw in this run (0 until counted)." },
+    "current": { "type": ["string", "null"], "description": "What is being drawn right now, display text: \"<kind>: <id>\"." },
+    "errors": { "type": "integer", "minimum": 0 },
+    "lastError": { "type": "string", "description": "Short; one line." },
+    "stages": {
+      "type": "array",
+      "description": "Parts of the run in order; the first one not done is where it is.",
+      "items": { "type": "object", "required": ["name", "state"], "additionalProperties": false,
+        "properties": {
+          "name": { "enum": ["art", "theme", "fonts"] },
+          "state": { "enum": ["pending", "running", "done", "failed"] }
+        } }
+    },
+    "gamePausedBySync": { "type": "boolean", "description": "True while the mod holds the game paused; false once the previous speed is restored." },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "elapsedMs": { "type": "integer", "minimum": 0 },
+    "worstFrameMs": { "type": "number", "minimum": 0, "description": "Informational: the run is not frame-budgeted." }
+  }
+}

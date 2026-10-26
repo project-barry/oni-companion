@@ -1,0 +1,21 @@
+# Klei data never goes in the repo
+mod/lib/
+fixtures/real
+fixtures/real/
+# build outputs
+mod/bin/
+mod/obj/
+*.dll
+*.zip
+build/
+dist/
+# python
+__pycache__/
+*.pyc
+# os / sync
+.DS_Store
+* 2
+* 2.*
+clients/barry/dist/
+clients/barry/dev.json
+clients/android/build-out/

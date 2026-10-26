@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "modVersion": "0.3.0",
+  "state": "running",
+  "scope": "missing",
+  "build": 100001,
+  "dlcIds": [
+    "DLC_ALPHA_ID"
+  ],
+  "done": 312,
+  "total": 1033,
+  "current": "building: SynthWidget",
+  "errors": 0,
+  "stages": [
+    {
+      "name": "art",
+      "state": "running"
+    },
+    {
+      "name": "theme",
+      "state": "pending"
+    },
+    {
+      "name": "fonts",
+      "state": "pending"
+    }
+  ],
+  "gamePausedBySync": true,
+  "startedAt": "2026-01-01T12:00:00Z",
+  "updatedAt": "2026-01-01T12:00:00Z",
+  "elapsedMs": 41250
+}

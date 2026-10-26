@@ -1,0 +1,20 @@
+{
+  "enabled": false,
+  "listening": false,
+  "port": null,
+  "plainHttp": false,
+  "plainHttpPort": null,
+  "identity": {
+    "instanceId": "3f6c1b2e-8a4d-4c5e-9b7a-1d2e3f405162",
+    "name": "spiffy-raccoon",
+    "fingerprint": "a4cc369e78ac5d4cdffd1aedb7d96950d667720032b8e5d9588ae72866331434",
+    "fingerprintTag": "A4CC",
+    "apiVersion": 1,
+    "coreVersion": "1.4.0"
+  },
+  "addresses": [],
+  "code": null,
+  "qrText": null,
+  "devices": [],
+  "plainHttpNote": null
+}

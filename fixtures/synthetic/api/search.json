@@ -1,0 +1,22 @@
+{
+  "query": "wid",
+  "results": [
+    {
+      "kind": "building",
+      "id": "SynthWidgetMaker",
+      "name": "Widget Maker",
+      "dlc": [],
+      "subtitle": "Builds widgets"
+    },
+    {
+      "kind": "element",
+      "id": "SynthWidgetium",
+      "name": "Widgetium",
+      "dlc": [
+        "DLC_ALPHA_ID"
+      ],
+      "subtitle": "Solid"
+    }
+  ],
+  "truncated": false
+}

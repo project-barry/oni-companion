@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "title": "Resources",
+  "subtitle": "Home Asteroid",
+  "source": "mod-live",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony"
+  ],
+  "filter": {
+    "placeholder": "Filter resources"
+  },
+  "worldSwitcher": {
+    "active": 0,
+    "worlds": [
+      {
+        "id": 0,
+        "name": "Home Asteroid"
+      },
+      {
+        "id": 1,
+        "name": "Far Asteroid"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "group",
+      "title": "Metal: 1,500.5 kg",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "title": "Synth Widgetium",
+              "subtitle": "+40 kg since last cycle",
+              "badge": "1,200.5 kg",
+              "tone": "good",
+              "art": "/api/v1/art/element/SynthWidgetium",
+              "ref": {
+                "kind": "element",
+                "id": "SynthWidgetium",
+                "art": "/api/v1/art/element/SynthWidgetium"
+              }
+            },
+            {
+              "title": "Synth Ore",
+              "subtitle": "-",
+              "badge": "300 kg",
+              "art": "/api/v1/art/item/SynthOre"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Food: 28,800 kcal",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "title": "Synth Bar",
+              "subtitle": "-120 kcal since last cycle",
+              "badge": "12 (28,800 kcal)",
+              "tone": "warn",
+              "art": "/api/v1/art/food/SynthBar",
+              "ref": {
+                "kind": "food",
+                "id": "SynthBar"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Critters: 4",
+      "collapsed": true,
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            {
+              "title": "Synth Beast",
+              "subtitle": "-",
+              "badge": "4",
+              "art": "/api/v1/art/critter/SynthBeast",
+              "ref": {
+                "kind": "critter",
+                "id": "SynthBeast"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

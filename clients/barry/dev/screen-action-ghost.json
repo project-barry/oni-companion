@@ -1,0 +1,1 @@
+{"schema":1,"title":"Action ghost","blocks":[{"type":"list","items":[{"title":"Zoom to ghost","actions":[{"id":"focus","label":"Show in game","args":{"target":{"kind":"dupe","id":"ghost"},"select":true}}]}]}]}

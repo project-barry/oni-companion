@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "blocks.schema.json",
+  "title": "ONI Companion blocks (v1, additions in v1.1)",
+  "description": "FROZEN. The block types a Screen may contain. Layout-free: no pixel sizes, colors or fonts. A front end must render every type here, and show any unknown `type` as a plain notice \"Update the app to see this.\"",
+  "$defs": {
+    "Kind": {
+      "description": "Ref kinds. Ids are the game's own ids. v1.1 adds dupe: a colony duplicant (id = live duplicant id), resolved only by GET /entry/dupe/<id>. v1.2 adds alert: a live colony alert (id = live.json alerts[].id), resolved only by GET /entry/alert/<id>; 404 once the alert is gone.",
+      "enum": ["element", "building", "critter", "plant", "geyser", "food", "medicine", "recipe", "tech", "trait", "skill", "room", "codex", "dupe", "alert"]
+    },
+    "ArtPath": {
+      "description": "v1.1. Path of an image on the core: /api/v1/art/<artKind>/<id>. The front end loads it with the same token as other calls (?token= works for Image sources). A 404 means \"no art\": show the v1 glyph. Only the core fills this; it is never present when the mod rendered no art.",
+      "type": "string", "pattern": "^/api/v1/art/[a-z]+/[^\\s?#]+$"
+    },
+    "Ref": {
+      "description": "Points at one entry. Front ends navigate with GET /entry/<kind>/<id>. v1.1: optional `art`.",
+      "type": "object",
+      "required": ["kind", "id"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "$ref": "#/$defs/Kind" },
+        "id": { "type": "string", "minLength": 1 },
+        "art": { "$ref": "#/$defs/ArtPath" }
+      }
+    },
+    "Action": {
+      "description": "v1.1. A button. The front end shows `label` and, on tap, sends POST /api/v1/actions/<id> with `args` as the JSON body, exactly once per tap, then shows the result from GET /actions/<seq> (or the 'action' event).",
+      "type": "object", "required": ["id", "label"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$", "description": "Action name. v1.1: focus. v1.2: alert_activate, alert_dismiss. A front end posts to /actions/<id> for any id it is given; it never needs to know the names." },
+        "label": { "type": "string", "minLength": 1 },
+        "args": { "type": "object" },
+        "trigger": { "enum": ["tap", "longPress"], "description": "v1.2, optional, default tap. longPress: the front end shows no button for it; a long press (about 500 ms) on the row or card reveals it (for example a Dismiss button) and only a tap on the revealed button posts it. Tapping elsewhere hides it again. The core sends such an action only when the game allows it (alert dismissable)." },
+        "danger": { "type": "boolean", "description": "v1.2, optional. Draw the button as destructive (Dismiss)." },
+        "active": { "type": "boolean", "description": "v1.3, optional, default false. The button shows the game's current state (the active overlay, the active tool, the selected priority): draw it highlighted." },
+        "confirm": { "type": "string", "description": "v1.3, optional. The front end asks the user this question first (Yes / No) and posts only on Yes. Used for the one action that writes into the game's folder." },
+        "enabled": { "type": "boolean", "description": "v1.3, optional, default true. false: draw the button greyed and do not post on tap; show `reason` instead (on tap or long press)." },
+        "reason": { "type": "string", "description": "v1.3, optional. Why the button is disabled, in the game's words (for example \"Needs research: Pressure Management\"). Only with enabled false." }
+      }
+    },
+    "ColorToken": {
+      "description": "v1.2. A name from the theme colors (GET /theme colors). The front end looks the color up there, so a mod theme restyles text without changing Screens.",
+      "enum": ["text", "textDim", "textTitle", "positive", "negative", "warning", "info", "alertText", "alertBadText"]
+    },
+    "Badge": {
+      "description": "v1.1. A short warning label on a card or row. The core orders badges worst first.",
+      "type": "object", "required": ["level", "label"], "additionalProperties": false,
+      "properties": {
+        "level": { "enum": ["danger", "warn", "info"] },
+        "label": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Tone": {
+      "description": "Meaning, not color. The front end picks the color.",
+      "enum": ["neutral", "good", "warn", "bad", "info"]
+    },
+    "Span": {
+      "description": "v1.2 adds optional `color` (a theme color token), `icon` (inline art, an ArtPath of kind ui; `text` is the alt text and may be empty on plain spans) and, on plain and bold spans, `action` (tapping the span posts it, like a TextMeshPro link).",
+      "oneOf": [
+        { "type": "object", "required": ["type", "text"], "additionalProperties": false,
+          "properties": { "type": { "const": "plain" }, "text": { "type": "string" }, "color": { "$ref": "#/$defs/ColorToken" }, "icon": { "$ref": "#/$defs/ArtPath" }, "action": { "$ref": "#/$defs/Action" } } },
+        { "type": "object", "required": ["type", "text"], "additionalProperties": false,
+          "properties": { "type": { "const": "bold" }, "text": { "type": "string" }, "color": { "$ref": "#/$defs/ColorToken" }, "icon": { "$ref": "#/$defs/ArtPath" }, "action": { "$ref": "#/$defs/Action" } } },
+        { "type": "object", "required": ["type", "ref", "text"], "additionalProperties": false,
+          "properties": { "type": { "const": "ref" }, "ref": { "$ref": "#/$defs/Ref" }, "text": { "type": "string", "minLength": 1 }, "color": { "$ref": "#/$defs/ColorToken" }, "icon": { "$ref": "#/$defs/ArtPath" } } },
+        { "type": "object", "required": ["type", "url", "text"], "additionalProperties": false,
+          "properties": { "type": { "const": "link" }, "url": { "$ref": "#/$defs/HttpsUrl" }, "text": { "type": "string", "minLength": 1 }, "color": { "$ref": "#/$defs/ColorToken" }, "icon": { "$ref": "#/$defs/ArtPath" } } }
+      ]
+    },
+    "HttpsUrl": { "type": "string", "pattern": "^https://[^\\s]+$" },
+    "Value": {
+      "description": "A display value. Numbers are shown as given by the core (already rounded for display); strings are shown as is.",
+      "type": ["string", "number"]
+    },
+
+    "Heading": {
+      "type": "object", "required": ["type", "text"], "additionalProperties": false,
+      "properties": { "type": { "const": "heading" }, "text": { "type": "string", "minLength": 1 }, "level": { "enum": [1, 2, 3], "description": "default 2" }, "art": { "$ref": "#/$defs/ArtPath", "description": "v1.1. Header image of an entry." } }
+    },
+    "Text": {
+      "type": "object", "required": ["type", "spans"], "additionalProperties": false,
+      "properties": { "type": { "const": "text" }, "spans": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Span" } } }
+    },
+    "StatRow": {
+      "type": "object", "required": ["label", "value"], "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "value": { "$ref": "#/$defs/Value" },
+        "unit": { "type": "string" },
+        "hint": { "type": "string" },
+        "ref": { "$ref": "#/$defs/Ref" },
+        "tone": { "$ref": "#/$defs/Tone" }
+      }
+    },
+    "Stats": {
+      "type": "object", "required": ["type", "rows"], "additionalProperties": false,
+      "properties": { "type": { "const": "stats" }, "title": { "type": "string" }, "rows": { "type": "array", "items": { "$ref": "#/$defs/StatRow" } } }
+    },
+    "Chip": {
+      "type": "object", "required": ["label"], "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "style": { "enum": ["dlc", "state", "category", "plain"], "description": "default plain" },
+        "ref": { "$ref": "#/$defs/Ref" }
+      }
+    },
+    "Chips": {
+      "type": "object", "required": ["type", "chips"], "additionalProperties": false,
+      "properties": { "type": { "const": "chips" }, "chips": { "type": "array", "items": { "$ref": "#/$defs/Chip" } } }
+    },
+    "ListItem": {
+      "type": "object", "required": ["title"], "additionalProperties": false,
+      "properties": {
+        "ref": { "$ref": "#/$defs/Ref", "description": "If present the row is tappable." },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "badge": { "type": "string" },
+        "tone": { "$ref": "#/$defs/Tone" },
+        "art": { "$ref": "#/$defs/ArtPath", "description": "v1.1." },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/Action" }, "description": "v1.1." }
+      }
+    },
+    "List": {
+      "type": "object", "required": ["type", "items"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "list" }, "title": { "type": "string" },
+        "variant": { "enum": ["alerts"], "description": "v1.2, optional. A hint, not layout: `alerts` marks the colony alert list so a front end may draw it like the game's alert list. Front ends that do not know it draw a plain list." },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/ListItem" } },
+        "empty": { "type": "string", "description": "Text shown when items is empty." }
+      }
+    },
+    "Meter": {
+      "type": "object", "required": ["label", "value", "max"], "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" }, "value": { "type": "number" }, "max": { "type": "number", "minimum": 0 },
+        "unit": { "type": "string" }, "tone": { "$ref": "#/$defs/Tone" }
+      }
+    },
+    "Card": {
+      "type": "object", "required": ["title"], "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" }, "subtitle": { "type": "string" }, "badge": { "type": "string" },
+        "ref": { "$ref": "#/$defs/Ref" }, "tone": { "$ref": "#/$defs/Tone" },
+        "stats": { "type": "array", "items": { "$ref": "#/$defs/StatRow" } },
+        "meters": { "type": "array", "items": { "$ref": "#/$defs/Meter" } },
+        "art": { "$ref": "#/$defs/ArtPath", "description": "v1.1. Portrait or icon." },
+        "badges": { "type": "array", "items": { "$ref": "#/$defs/Badge" }, "description": "v1.1. Warnings, worst first; omitted or empty when nothing is wrong. (`badge` stays the v1 plain text.)" },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/Action" }, "description": "v1.1." }
+      }
+    },
+    "Grid": {
+      "type": "object", "required": ["type", "cards"], "additionalProperties": false,
+      "properties": { "type": { "const": "grid" }, "title": { "type": "string" },
+        "variant": { "enum": ["pad", "priority"], "description": "v1.3, optional hint, not layout. pad: a grid of equal buttons; each card is one button (its `art` the icon, its first action the tap) and a front end that does not know the hint draws a plain grid. priority: the game's priority bar (1..9 then emergency), a single row of small buttons." },
+        "cards": { "type": "array", "items": { "$ref": "#/$defs/Card" } } }
+    },
+    "Conduit": { "enum": ["gas", "liquid", "solid", "power", "logic", "none"] },
+    "Port": {
+      "type": "object", "required": ["label"], "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "element": { "$ref": "#/$defs/Ref", "description": "kind is usually element; may be any kind." },
+        "rate": { "type": "number", "minimum": 0 },
+        "unit": { "type": "string", "description": "Display unit of rate, e.g. \"g/s\" or \"W\"." },
+        "conduit": { "$ref": "#/$defs/Conduit" },
+        "note": { "type": "string" }
+      }
+    },
+    "Ports": {
+      "type": "object", "required": ["type", "inputs", "outputs"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "ports" }, "title": { "type": "string" },
+        "inputs": { "type": "array", "items": { "$ref": "#/$defs/Port" } },
+        "outputs": { "type": "array", "items": { "$ref": "#/$defs/Port" } }
+      }
+    },
+    "PhaseState": {
+      "type": "object", "required": ["state", "label"], "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["solid", "liquid", "gas", "vacuum"] },
+        "label": { "type": "string" },
+        "range": { "type": "string", "description": "Display text, e.g. \"-10 to 120 C\"." },
+        "loC": { "type": ["number", "null"], "description": "Lower bound in Celsius; null = unbounded." },
+        "hiC": { "type": ["number", "null"], "description": "Upper bound in Celsius; null = unbounded." },
+        "target": { "$ref": "#/$defs/Ref", "description": "Element it turns into at this boundary." }
+      }
+    },
+    "Phases": {
+      "description": "Element ladder, ordered from coldest to hottest.",
+      "type": "object", "required": ["type", "states"], "additionalProperties": false,
+      "properties": { "type": { "const": "phases" }, "title": { "type": "string" }, "states": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/PhaseState" } } }
+    },
+    "Progress": {
+      "type": "object", "required": ["type", "label", "value", "max"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "progress" }, "label": { "type": "string" },
+        "value": { "type": "number" }, "max": { "type": "number", "minimum": 0 },
+        "unit": { "type": "string" }, "tone": { "$ref": "#/$defs/Tone" }
+      }
+    },
+    "Cell": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "object", "required": ["text"], "additionalProperties": false,
+          "properties": { "text": { "type": "string" }, "ref": { "$ref": "#/$defs/Ref" }, "tone": { "$ref": "#/$defs/Tone" } } }
+      ]
+    },
+    "Table": {
+      "description": "Small. Max 6 columns. Every row has exactly as many cells as there are columns.",
+      "type": "object", "required": ["type", "columns", "rows"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "table" }, "title": { "type": "string" },
+        "columns": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "type": "string" } },
+        "rows": { "type": "array", "items": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/Cell" } } }
+      }
+    },
+    "Notice": {
+      "type": "object", "required": ["type", "level", "text"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "notice" }, "level": { "enum": ["info", "warn", "error"] },
+        "title": { "type": "string" }, "text": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Unit": {
+      "type": "object", "required": ["id", "label"], "additionalProperties": false,
+      "properties": { "id": { "type": "string" }, "label": { "type": "string" } }
+    },
+    "Option": {
+      "type": "object", "required": ["value", "label"], "additionalProperties": false,
+      "properties": { "value": { "type": "string" }, "label": { "type": "string" } }
+    },
+    "Field": {
+      "description": "Submitted value types: number -> JSON number, or {\"value\": n, \"unit\": unitId} when `units` is present; element -> element id string; choice -> option value string; toggle -> boolean.",
+      "oneOf": [
+        { "type": "object", "required": ["kind", "name", "label"], "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "number" }, "name": { "$ref": "#/$defs/FieldName" }, "label": { "type": "string" },
+            "default": { "type": "number" }, "min": { "type": "number" }, "max": { "type": "number" }, "step": { "type": "number" },
+            "unit": { "type": "string", "description": "Fixed display unit when `units` is absent." },
+            "units": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/Unit" }, "description": "Unit choice." },
+            "defaultUnit": { "type": "string", "description": "One of units[].id." }
+          } },
+        { "type": "object", "required": ["kind", "name", "label"], "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "element" }, "name": { "$ref": "#/$defs/FieldName" }, "label": { "type": "string" },
+            "default": { "type": "string" },
+            "filter": { "enum": ["any", "solid", "liquid", "gas"], "description": "default any" }
+          } },
+        { "type": "object", "required": ["kind", "name", "label", "options"], "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "choice" }, "name": { "$ref": "#/$defs/FieldName" }, "label": { "type": "string" },
+            "options": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Option" } },
+            "default": { "type": "string" }
+          } },
+        { "type": "object", "required": ["kind", "name", "label"], "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "toggle" }, "name": { "$ref": "#/$defs/FieldName" }, "label": { "type": "string" },
+            "default": { "type": "boolean" }
+          } }
+      ]
+    },
+    "FieldName": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_]*$" },
+    "Form": {
+      "description": "Submit with POST /api/v1/tools/<tool> and body {\"values\": {<field name>: <value>}}. The reply is a Screen (usually with the same form pre-filled plus result blocks).",
+      "type": "object", "required": ["type", "tool", "fields", "submitLabel"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "form" }, "tool": { "type": "string", "minLength": 1 }, "title": { "type": "string" },
+        "submitLabel": { "type": "string" },
+        "endpoint": { "type": "string", "pattern": "^/[a-z][a-z0-9_/-]*$", "description": "v1.1. POST here (under /api/v1) instead of /tools/<tool>, same body shape. Used by /settings." },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/Field" } }
+      }
+    },
+    "Link": {
+      "description": "External URL; opens in the system browser.",
+      "type": "object", "required": ["type", "label", "url"], "additionalProperties": false,
+      "properties": { "type": { "const": "link" }, "label": { "type": "string" }, "url": { "$ref": "#/$defs/HttpsUrl" } }
+    },
+    "Image": {
+      "description": "v1.1. One picture from the core's art folder.",
+      "type": "object", "required": ["type", "art"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "image" }, "art": { "$ref": "#/$defs/ArtPath" },
+        "caption": { "type": "string" }, "alt": { "type": "string" },
+        "size": { "enum": ["small", "medium", "large"], "description": "Hint only; default medium." }
+      }
+    },
+    "PickerOption": {
+      "description": "v1.3. One material the game's picker offers for a slot.",
+      "type": "object", "required": ["id", "name", "needKg", "haveKg", "enabled", "selected"], "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "description": "Element id; what goes into build_select materials." },
+        "name": { "type": "string" },
+        "art": { "$ref": "#/$defs/ArtPath" },
+        "ref": { "$ref": "#/$defs/Ref" },
+        "needKg": { "type": "number", "minimum": 0 },
+        "haveKg": { "type": "number", "minimum": 0, "description": "What the colony has available in the active world." },
+        "enabled": { "type": "boolean", "description": "false: the colony has less than needKg; draw it greyed and not selectable, like the game." },
+        "selected": { "type": "boolean", "description": "The pre-selection (the game's default choice). Exactly one option per slot has it, and never a disabled one unless every option is disabled." }
+      }
+    },
+    "PickerSlot": {
+      "type": "object", "required": ["label", "needKg", "options"], "additionalProperties": false,
+      "properties": { "label": { "type": "string" }, "needKg": { "type": "number", "minimum": 0 },
+        "options": { "type": "array", "items": { "$ref": "#/$defs/PickerOption" } },
+        "empty": { "type": "string", "description": "Shown when options is empty (nothing discovered for this slot yet)." } }
+    },
+    "Picker": {
+      "description": "v1.3. The material choice of a building, like the game's build menu: one choice per material slot, then one button. The front end keeps the selection (starting from `selected`), and on tap posts `action.id` with `action.args` plus `materials` (the chosen option ids, one per slot, in slot order). The block holds no state.",
+      "type": "object", "required": ["type", "slots", "action"], "additionalProperties": false,
+      "properties": { "type": { "const": "picker" }, "title": { "type": "string" },
+        "slots": { "type": "array", "items": { "$ref": "#/$defs/PickerSlot" } },
+        "action": { "$ref": "#/$defs/Action", "description": "build_select with args {buildingId}; enabled / reason as for any button." } }
+    },
+    "Divider": {
+      "type": "object", "required": ["type"], "additionalProperties": false,
+      "properties": { "type": { "const": "divider" } }
+    },
+    "Group": {
+      "type": "object", "required": ["type", "title", "blocks"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "group" }, "title": { "type": "string", "minLength": 1 },
+        "collapsed": { "type": "boolean", "description": "Initial state; default false." },
+        "blocks": { "type": "array", "items": { "$ref": "#/$defs/Block" } }
+      }
+    },
+    "Block": {
+      "description": "Discriminated by `type`.",
+      "oneOf": [
+        { "$ref": "#/$defs/Heading" }, { "$ref": "#/$defs/Text" }, { "$ref": "#/$defs/Stats" },
+        { "$ref": "#/$defs/Chips" }, { "$ref": "#/$defs/List" }, { "$ref": "#/$defs/Grid" },
+        { "$ref": "#/$defs/Ports" }, { "$ref": "#/$defs/Phases" }, { "$ref": "#/$defs/Progress" },
+        { "$ref": "#/$defs/Table" }, { "$ref": "#/$defs/Notice" }, { "$ref": "#/$defs/Form" },
+        { "$ref": "#/$defs/Link" }, { "$ref": "#/$defs/Divider" }, { "$ref": "#/$defs/Group" },
+        { "$ref": "#/$defs/Image" }, { "$ref": "#/$defs/Picker" }
+      ]
+    }
+  }
+}

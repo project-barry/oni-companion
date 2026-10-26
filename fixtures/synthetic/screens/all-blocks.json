@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "title": "All blocks",
+  "subtitle": "Every block type once",
+  "source": "none",
+  "asOf": "2026-01-01T12:00:00Z",
+  "refreshOn": [
+    "colony",
+    "gamedata"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "Heading",
+      "level": 1
+    },
+    {
+      "type": "text",
+      "spans": [
+        {
+          "type": "plain",
+          "text": "Plain, "
+        },
+        {
+          "type": "bold",
+          "text": "bold, "
+        },
+        {
+          "type": "ref",
+          "ref": {
+            "kind": "building",
+            "id": "SynthWidgetMaker"
+          },
+          "text": "a ref, "
+        },
+        {
+          "type": "link",
+          "url": "https://example.com/x",
+          "text": "a link"
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "rows": [
+        {
+          "label": "A",
+          "value": 1,
+          "unit": "u",
+          "hint": "h",
+          "ref": {
+            "kind": "building",
+            "id": "SynthWidgetMaker"
+          },
+          "tone": "info"
+        }
+      ]
+    },
+    {
+      "type": "chips",
+      "chips": [
+        {
+          "label": "plain"
+        },
+        {
+          "label": "DLC",
+          "style": "dlc"
+        },
+        {
+          "label": "Solid",
+          "style": "state",
+          "ref": {
+            "kind": "element",
+            "id": "SynthWidgetium"
+          }
+        },
+        {
+          "label": "Cat",
+          "style": "category"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [],
+      "empty": "Nothing here."
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "title": "Card"
+        }
+      ]
+    },
+    {
+      "type": "ports",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "type": "phases",
+      "states": [
+        {
+          "state": "vacuum",
+          "label": "Vacuum"
+        }
+      ]
+    },
+    {
+      "type": "progress",
+      "label": "P",
+      "value": 1,
+      "max": 2
+    },
+    {
+      "type": "table",
+      "columns": [
+        "a"
+      ],
+      "rows": [
+        [
+          "x"
+        ]
+      ]
+    },
+    {
+      "type": "notice",
+      "level": "error",
+      "text": "Error notice"
+    },
+    {
+      "type": "form",
+      "tool": "heat",
+      "submitLabel": "Go",
+      "fields": []
+    },
+    {
+      "type": "link",
+      "label": "Link",
+      "url": "https://example.com"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "group",
+      "title": "Group",
+      "blocks": [
+        {
+          "type": "divider"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "art": "/api/v1/art/building/SynthWidget",
+      "caption": "Image block",
+      "alt": "A placeholder square",
+      "size": "small"
+    },
+    {
+      "type": "heading",
+      "text": "With art",
+      "art": "/api/v1/art/plant/SynthPlant"
+    },
+    {
+      "type": "grid",
+      "cards": [
+        {
+          "title": "Card",
+          "art": "/api/v1/art/critter/SynthBeast",
+          "badges": [
+            {
+              "level": "info",
+              "label": "i"
+            }
+          ],
+          "actions": [
+            {
+              "id": "focus",
+              "label": "Go",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

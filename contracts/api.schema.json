@@ -1,0 +1,440 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "api.schema.json",
+  "title": "ONI Companion HTTP API v1 (+v1.1): non-Screen replies",
+  "description": "FROZEN. Reply bodies for /api/v1 endpoints. Screen replies use screen.schema.json. See api.md for paths, auth and errors.",
+  "$defs": {
+    "Error": {
+      "description": "Every non-2xx reply.",
+      "type": "object", "required": ["error"], "additionalProperties": false,
+      "properties": { "error": { "type": "object", "required": ["code", "message"], "additionalProperties": false,
+        "properties": {
+          "code": { "enum": ["bad_token", "bad_request", "not_found", "no_data", "not_in_v1", "internal", "unavailable", "unauthorized", "rate_limited", "local_only", "bad_code"], "description": "v1.4: unauthorized (HTTP 401, network listener only: device token missing, unknown or removed), rate_limited (429), local_only (403: a connect-management endpoint was called from the network listener), bad_code (403: pairing code wrong, expired or used). unavailable (v1.1): the mod or the running game is needed and is not there, e.g. an action while the game is in the menu. HTTP 503." },
+          "message": { "type": "string" }
+        } } }
+    },
+    "DlcId": { "type": "string", "minLength": 1 },
+    "Status": {
+      "type": "object",
+      "required": ["apiVersion", "coreVersion", "game", "mod", "cache", "colony"],
+      "additionalProperties": false,
+      "properties": {
+        "apiVersion": { "const": 1 },
+        "coreVersion": { "type": "string" },
+        "game": { "type": "object", "required": ["found"], "additionalProperties": false,
+          "properties": {
+            "found": { "type": "boolean" },
+            "build": { "type": ["integer", "null"] },
+            "dlcInstalled": { "type": "array", "items": { "$ref": "#/$defs/DlcId" }, "description": "DLC folders found in the install." },
+            "dlcExported": { "type": "array", "items": { "$ref": "#/$defs/DlcId" }, "description": "DLC ids covered by mod export files." },
+            "dlcMissingExport": { "type": "array", "items": { "$ref": "#/$defs/DlcId" }, "description": "Installed but never exported (the user has not started a game with it). Shown to the user; never invented." }
+          } },
+        "mod": { "type": "object", "required": ["present"], "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean", "description": "An export or live file exists." },
+            "version": { "type": ["string", "null"] },
+            "exportFiles": { "type": "array", "items": { "type": "string" } },
+            "liveFresh": { "type": "boolean", "description": "live.json state is running and was written recently (core decides the threshold)." }
+          } },
+        "connect": { "type": "object", "required": ["enabled"], "additionalProperties": false,
+          "description": "v1.4, optional. Present on the loopback listener only (never sent to a paired device).",
+          "properties": { "enabled": { "type": "boolean" }, "listening": { "type": "boolean" }, "devices": { "type": "integer", "minimum": 0 } } },
+        "modState": { "$ref": "#/$defs/ModState" },
+        "cache": { "type": "object", "required": ["state"], "additionalProperties": false,
+          "properties": {
+            "state": { "enum": ["none", "building", "ready", "error"] },
+            "builtAt": { "type": "string", "format": "date-time" },
+            "message": { "type": "string" }
+          } },
+        "colony": { "type": "object", "required": ["source"], "additionalProperties": false,
+          "properties": {
+            "source": { "enum": ["mod-live", "save", "header", "none"] },
+            "asOf": { "type": "string", "format": "date-time" },
+            "name": { "type": "string" },
+            "cycle": { "type": "integer" }
+          } },
+        "newestSave": { "oneOf": [ { "type": "null" }, { "type": "object", "required": ["name", "modifiedAt"], "additionalProperties": false,
+          "properties": { "name": { "type": "string" }, "cycle": { "type": "integer" }, "modifiedAt": { "type": "string", "format": "date-time" } } } ] },
+        "userDir": { "type": "object", "required": ["kind", "path"], "additionalProperties": false,
+          "description": "The ONI user folder the core reads: the Linux build, a Proton prefix, or other.",
+          "properties": { "kind": { "enum": ["linux", "proton", "macos", "windows", "custom"] }, "path": { "type": "string" } } }
+      }
+    },
+    "SearchResult": {
+      "type": "object", "required": ["kind", "id", "name", "dlc"], "additionalProperties": false,
+      "properties": {
+        "kind": { "$ref": "blocks.schema.json#/$defs/Kind" },
+        "id": { "type": "string" }, "name": { "type": "string" },
+        "dlc": { "type": "array", "items": { "$ref": "#/$defs/DlcId" } },
+        "subtitle": { "type": "string" }
+      }
+    },
+    "Search": {
+      "description": "Ranked best first: exact name, prefix, word prefix, fuzzy.",
+      "type": "object", "required": ["query", "results"], "additionalProperties": false,
+      "properties": {
+        "query": { "type": "string" },
+        "results": { "type": "array", "items": { "$ref": "#/$defs/SearchResult" } },
+        "truncated": { "type": "boolean" }
+      }
+    },
+    "Kinds": {
+      "type": "object", "required": ["kinds"], "additionalProperties": false,
+      "properties": { "kinds": { "type": "array", "items": { "type": "object", "required": ["kind", "label", "count"], "additionalProperties": false,
+        "properties": { "kind": { "$ref": "blocks.schema.json#/$defs/Kind" }, "label": { "type": "string" }, "count": { "type": "integer", "minimum": 0 } } } } }
+    },
+    "Raw": {
+      "description": "GET /raw/<kind>/<id>: the merged entry exactly as the core holds it, so front ends can build custom views. Shape = the matching entry def in mod-export.schema.json (Building, Element, ...) for kinds that come from the mod export; for kind codex it is {id, title, text}. Always has id, name, dlc.",
+      "type": "object", "required": ["kind", "id", "name", "dlc", "source", "data"], "additionalProperties": false,
+      "properties": {
+        "kind": { "$ref": "blocks.schema.json#/$defs/Kind" },
+        "id": { "type": "string" }, "name": { "type": "string" },
+        "dlc": { "type": "array", "items": { "$ref": "#/$defs/DlcId" } },
+        "source": { "enum": ["mod-export", "yaml"] },
+        "data": { "type": "object" }
+      }
+    },
+    "ColonyReply": {
+      "description": "GET /colony: a Screen plus `raw`, the colony facts in the shape of mod-live.schema.json (fields the source cannot give are left out). raw.source says which source was used.",
+      "allOf": [
+        { "$ref": "screen.schema.json" },
+        { "type": "object", "required": ["raw"],
+          "properties": { "raw": { "type": "object", "required": ["source", "state"],
+            "properties": {
+              "source": { "enum": ["mod-live", "save", "header", "none"] },
+              "asOf": { "type": "string", "format": "date-time" },
+              "state": { "enum": ["running", "menu", "saved"], "description": "running = live file says so; menu = live file says menu; saved = data comes from a save." },
+              "colonyName": { "type": "string" },
+              "cycle": { "type": "integer" },
+              "timeOfDay": { "type": "number" },
+              "paused": { "type": "boolean" },
+              "speed": { "type": "integer" },
+              "activeWorldId": { "type": "integer" },
+              "worlds": { "type": "array", "items": { "$ref": "mod-live.schema.json#/$defs/World" } }
+            } } } }
+      ]
+    },
+    "ToolList": {
+      "type": "object", "required": ["tools"], "additionalProperties": false,
+      "properties": { "tools": { "type": "array", "items": { "type": "object", "required": ["id", "title", "summary"], "additionalProperties": false,
+        "properties": { "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" }, "title": { "type": "string" }, "summary": { "type": "string" } } } } }
+    },
+    "ToolPost": {
+      "description": "Request body of POST /tools/<id>.",
+      "type": "object", "required": ["values"], "additionalProperties": false,
+      "properties": { "values": { "type": "object" } }
+    },
+    "Events": {
+      "description": "Long-poll reply. On timeout `changed` is empty and `seq` is unchanged. A client always asks again with since=<seq>.",
+      "type": "object", "required": ["seq", "changed"], "additionalProperties": false,
+      "properties": {
+        "seq": { "type": "integer", "minimum": 0 },
+        "changed": { "type": "array", "uniqueItems": true, "items": { "enum": ["colony", "gamedata", "status", "action", "settings", "art", "controls", "sync", "pad", "build", "connect"] } }
+      }
+    },
+    "ActionPost": {
+      "description": "Body of POST /actions/<id>; the id picks the variant: focus -> ActionPostFocus, v1.3: overlay_set -> ActionPostOverlaySet, tool_select -> ActionPostToolSelect, build_select -> ActionPostBuildSelect, alert_activate -> ActionPostAlertActivate, alert_dismiss -> ActionPostAlertDismiss (anyOf: activate and dismiss bodies can look alike, the path decides). Set speed is not an action: it is POST /controls.",
+      "anyOf": [
+        { "$ref": "#/$defs/ActionPostFocus" },
+        { "$ref": "#/$defs/ActionPostOverlaySet" },
+        { "$ref": "#/$defs/ActionPostToolSelect" },
+        { "$ref": "#/$defs/ActionPostBuildSelect" },
+        { "$ref": "#/$defs/ActionPostAlertActivate" },
+        { "$ref": "#/$defs/ActionPostAlertDismiss" }
+      ]
+    },
+    "ActionPostAlertActivate": {
+      "description": "v1.2. Do what a click on the alert (or one of its highlighted lines) does in the game. 404 not_found when the core no longer has that alert; 503 unavailable in the menu / without the mod.",
+      "type": "object", "required": ["alertId"], "additionalProperties": false,
+      "properties": {
+        "alertId": { "type": "string", "minLength": 1 },
+        "link": { "type": "integer", "minimum": 0, "description": "Index of one of the alert's links. Absent = the main click." }
+      }
+    },
+    "ActionPostAlertDismiss": {
+      "description": "v1.2. Dismiss the alert in the game. Only for alerts the Screen offered the action for (dismissable). The alert leaves the app on the next live.json; until then the core keeps it with `dismissing`.",
+      "type": "object", "required": ["alertId"], "additionalProperties": false,
+      "properties": { "alertId": { "type": "string", "minLength": 1 } }
+    },
+    "ActionPostFocus": {
+      "description": "v1.1. Body of POST /actions/focus: one move of the game camera to one duplicant, once. Never a follow.",
+      "type": "object", "required": ["target"], "additionalProperties": false,
+      "properties": {
+        "target": { "type": "object", "required": ["kind", "id"], "additionalProperties": false,
+          "properties": { "kind": { "const": "dupe" }, "id": { "type": "string", "minLength": 1 } } },
+        "select": { "type": "boolean", "description": "Also select the duplicant so its info panel opens. Default true." }
+      }
+    },
+    "ActionPostOverlaySet": {
+      "description": "v1.3. Body of POST /actions/overlay_set: switch the game to an overlay. `mode` is an export overlays[].id (a Screen button carries it), or \"None\" for no overlay. Tapping the active overlay's button sends \"None\", like the game. 400 for a mode the export does not list; 503 when the game is not running.",
+      "type": "object", "required": ["mode"], "additionalProperties": false,
+      "properties": { "mode": { "type": "string", "minLength": 1, "maxLength": 100 } }
+    },
+    "ActionPostToolSelect": {
+      "description": "v1.3. Body of POST /actions/tool_select: activate a game tool, ready to drag on the game screen. `priority` (1..9 or \"emergency\") sets the game's priority first; priority alone changes only the priority.",
+      "type": "object", "additionalProperties": false, "anyOf": [ { "required": ["tool"] }, { "required": ["priority"] } ],
+      "properties": { "tool": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "priority": { "oneOf": [ { "type": "integer", "minimum": 1, "maximum": 9 }, { "const": "emergency" } ] } }
+    },
+    "ActionPostBuildSelect": {
+      "description": "v1.3. Body of POST /actions/build_select: open the game's build menu on a building and pick it for placement. `materials` = one element id per material slot, in the building's slot order (the picker block adds it). The core refuses (400) a building that is not unlocked, with the reason in `message`; an unknown building is 404.",
+      "type": "object", "required": ["buildingId"], "additionalProperties": false,
+      "properties": { "buildingId": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "materials": { "type": "array", "maxItems": 8, "items": { "type": "string", "minLength": 1, "maxLength": 100 } },
+        "facadeId": { "type": "string", "minLength": 1, "maxLength": 100 } }
+    },
+    "TabList": {
+      "description": "v1.3. Reply of GET /tabs: the app's tabs, named and ordered by the core. `path` is the endpoint (relative to /api/v1) the tab opens: a Screen for every tab except Codex, whose path is `kinds`: the front end draws the look-up (GET /kinds, /search, /list/<kind>, /entry) and the calculators (GET /tools). A front end shows exactly these tabs in this order. Colony, Resources, Buildings, Actions, Codex, Settings. Codex uses the game's own word for its encyclopedia (from the game's strings).",
+      "type": "object", "required": ["tabs"], "additionalProperties": false,
+      "properties": { "tabs": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["id", "label", "path"], "additionalProperties": false,
+        "properties": { "id": { "enum": ["colony", "resources", "buildings", "actions", "codex", "settings"] }, "label": { "type": "string", "minLength": 1 }, "path": { "type": "string", "pattern": "^[a-z][a-z/]*$" },
+          "needsLive": { "type": "boolean", "description": "The tab works only while the game runs (its buttons are disabled otherwise)." },
+          "excludeKinds": { "type": "array", "items": { "type": "string" }, "description": "Codex only: look-up kinds this tab leaves out (buildings have their own tab)." },
+          "includesTools": { "type": "boolean", "description": "Codex only: the calculators (GET /tools) are a section of this tab." } } } } }
+    },
+    "VersionRange": {
+      "type": "object", "required": ["min"], "additionalProperties": false,
+      "properties": { "min": { "type": "string" }, "max": { "type": "string" } }
+    },
+    "ModState": {
+      "description": "v1.3. Where the game mod stands, decided by the core; the Settings Screen shows it and Settings is the only page that names the mod. `state`: missing (not installed), disabled (installed, switched off in the game's mods.json for the active DLC set), no_live (enabled but no live data: the game is not running, or the mod failed), version_mismatch (the mod and this app do not fit; `compat.problem` says which is too old), ok. `steps` are plain-language instructions for this setup. `install.available` is true only when the app can copy its bundled mod into the game's mods folder and no copy exists yet (a Workshop copy also blocks it: two copies would both load).",
+      "type": "object", "required": ["state", "summary", "steps", "install", "compat"], "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["missing", "disabled", "no_live", "version_mismatch", "ok"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "copies": { "type": "array", "items": { "enum": ["local", "workshop"] }, "description": "Which copies of the mod are in the game's mods folder." },
+        "install": { "type": "object", "required": ["available"], "additionalProperties": false,
+          "properties": { "available": { "type": "boolean" }, "reason": { "type": "string", "description": "Why not, when not available." }, "target": { "type": "string", "description": "Folder it would copy to (the first of `targets`)." },
+            "targets": { "type": "array", "items": { "type": "string" }, "description": "v1.4.1. Every ONI user folder's mods/Local/OniCompanionLink the install would write." },
+            "blocked": { "type": "array", "description": "v1.4.1. Detected folders the install skips, with the plain-language reason (a Workshop copy, newest already there).",
+              "items": { "type": "object", "required": ["path", "reason"], "additionalProperties": false, "properties": { "path": { "type": "string" }, "reason": { "type": "string" } } } } } },
+        "versions": { "type": "array", "description": "v1.4.1. One row per detected ONI version (Linux, Proton), same order as the install targets.",
+          "items": { "$ref": "#/$defs/ModVersion" } },
+        "versionsSummary": { "type": "string", "description": "v1.4.1. e.g. `Linux: on, 0.4.3 \u00b7 Windows (Proton): off`." },
+        "updateBoth": { "type": "boolean", "description": "v1.4.1. The installed mod versions differ between the folders." },
+        "compat": { "type": "object", "required": ["core", "coreSupportsMod"], "additionalProperties": false,
+          "properties": {
+            "core": { "type": "string", "description": "This app's version." },
+            "coreSupportsMod": { "$ref": "#/$defs/VersionRange", "description": "Mod versions this app can use." },
+            "mod": { "type": ["string", "null"], "description": "The installed mod's version, when known." },
+            "modRequiresCore": { "oneOf": [ { "$ref": "#/$defs/VersionRange" }, { "type": "null" } ], "description": "App versions the installed mod declares it works with." },
+            "problem": { "enum": ["mod_too_old", "mod_too_new", "app_too_old", "app_too_new"] }
+          } }
+      }
+    },
+    "ModVersion": {
+      "description": "v1.4.1. The mod's state in one ONI user folder (one game version). `enabled` follows the game's KMod rule for the DLC set active in that folder (null when no copy). `crashDisabled`: the game's crash screen emptied the mod's enabledForDlc and that version's Player.log has a logged error naming the mod. `workshop`: a Workshop copy is there (the app never adds a Local one).",
+      "type": "object", "required": ["kind", "label", "path", "installed", "copy", "workshop", "enabled", "crashDisabled", "active"], "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["linux", "proton", "macos", "windows", "custom"] }, "label": { "type": "string" },
+        "path": { "type": "string" }, "library": { "type": ["string", "null"], "description": "Steam library holding the Proton prefix." },
+        "installed": { "type": ["string", "null"] }, "copy": { "enum": ["local", "workshop", null] },
+        "workshop": { "type": "boolean" }, "enabled": { "type": ["boolean", "null"] },
+        "crashDisabled": { "type": "boolean" }, "active": { "type": "boolean" }
+      }
+    },
+    "ModInstallPost": {
+      "description": "v1.3. Body of POST /mod/install. `confirm` must be true: the front end asks the user first (it shows `modState.install.target`); the core never writes into the game folder without it. 400 without confirm, 503 `unavailable` with the reason when install.available is false.",
+      "type": "object", "required": ["confirm"], "additionalProperties": false,
+      "properties": { "confirm": { "const": true } }
+    },
+    "ModInstallReply": {
+      "description": "v1.3. Reply of POST /mod/install: the mod was copied. The game must be restarted (or its Mods menu used) to load it; `modState` says which steps remain.",
+      "type": "object", "required": ["installed", "modState"], "additionalProperties": false,
+      "properties": { "installed": { "const": true }, "path": { "type": "string" },
+        "paths": { "type": "array", "items": { "type": "string" }, "description": "v1.4.1. Every folder written." },
+        "skipped": { "type": "array", "items": { "type": "object", "required": ["path", "reason"], "additionalProperties": false, "properties": { "path": { "type": "string" }, "reason": { "type": "string" } } } },
+        "modState": { "$ref": "#/$defs/ModState" } }
+    },
+    "ActionSent": {
+      "description": "v1.1. Reply of POST /actions/<id>.",
+      "type": "object", "required": ["seq"], "additionalProperties": false,
+      "properties": { "seq": { "type": "integer", "minimum": 1 } }
+    },
+    "ActionStatus": {
+      "description": "v1.1. Reply of GET /actions/<seq>. pending = written to the inbox, no ack yet; expired = no ack within 10 s.",
+      "type": "object", "required": ["seq", "state"], "additionalProperties": false,
+      "properties": {
+        "seq": { "type": "integer", "minimum": 1 },
+        "state": { "enum": ["pending", "done", "failed", "expired"] },
+        "message": { "type": "string" }
+      }
+    },
+    "Controls": {
+      "description": "v1.2. GET /controls and the reply of POST /controls (the state after the core accepted the command: `pending` is set until live.json confirms). `available` is false in the menu, with the mod missing, or when live.json is too old; `paused`/`speed` are then the last known values or absent.",
+      "type": "object", "required": ["available"], "additionalProperties": false,
+      "properties": {
+        "available": { "type": "boolean" },
+        "game": { "type": "object", "required": ["state", "label", "tone"], "additionalProperties": false,
+          "description": "What the game is doing now, for the header (front ends draw label + a dot in tone). A `controls` event goes out when it changes, also when the game's data goes stale (crash).",
+          "properties": { "state": { "enum": ["live", "paused", "menu", "not_running"] }, "label": { "type": "string" },
+                          "tone": { "enum": ["good", "warn", "neutral"] } } },
+        "reason": { "enum": ["menu", "no_mod", "stale"], "description": "Why available is false." },
+        "cause": { "enum": ["menu", "mod_off", "mod_crashed", "not_running", "stale", "no_mod"], "description": "F1. The real reason available is false (more exact than `reason`, which stays for older front ends). `menu` only when a fresh live file says menu; `mod_off` = ONI Companion Link is switched off in the running game; `mod_crashed` = mods.json shows the game turned it off after a crash." },
+        "message": { "type": "string", "description": "F1. The sentence to show for `cause`, from the core (every front end shows the same words)." },
+        "paused": { "type": "boolean" },
+        "speed": { "enum": [1, 2, 3] },
+        "pending": { "type": "object", "required": ["state"], "additionalProperties": false,
+          "description": "The command the core sent that live.json has not confirmed yet; the front end highlights this button at once. Cleared when live.json matches or after 10 s.",
+          "properties": { "state": { "enum": ["pause", "play", "speed"] }, "speed": { "enum": [1, 2, 3] }, "seq": { "type": "integer", "minimum": 1 } } },
+        "asOf": { "type": "string", "format": "date-time", "description": "writtenAt of the live.json the values come from." }
+      }
+    },
+    "ControlsPost": {
+      "description": "v1.2. Body of POST /controls; writes a set_speed command. pause / play (play = unpause, at `speed` if given, else the game's selected speed); speed = what the game's speed buttons do: select `speed` and keep the pause state. 503 unavailable when `available` is false; 400 for speed with pause, or state speed without speed.",
+      "type": "object", "required": ["state"], "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["pause", "play", "speed"] },
+        "speed": { "enum": [1, 2, 3], "description": "With play (optional) or speed (required)." }
+      }
+    },
+    "Sync": {
+      "description": "v1.2. GET /sync, and the reply of POST /sync. The mod's companion/sync/status.json (mod-sync-status.schema.json) plus what only the core knows. `state` idle = nothing running (also before the first sync). `needed` is true when there is no art pack for the current game build + DLC set (reason no_pack), the build changed (new_build) or a DLC set changed (new_dlc, scope missing is enough).",
+      "type": "object", "required": ["state", "needed", "canStart"], "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["idle", "running", "done", "failed"] },
+        "scope": { "enum": ["full", "missing"] },
+        "needed": { "type": "boolean" },
+        "neededReason": { "enum": ["no_pack", "new_build", "new_dlc"] },
+        "suggestedScope": { "enum": ["full", "missing"] },
+        "canStart": { "type": "boolean", "description": "False when the game is not running with the mod and a colony loaded; the front end then shows \"Start Oxygen Not Included to sync\"." },
+        "reason": { "enum": ["menu", "no_mod"], "description": "Why canStart is false." },
+        "cause": { "enum": ["menu", "mod_off", "mod_crashed", "not_running", "stale", "no_mod"], "description": "F1. The real reason available is false (more exact than `reason`, which stays for older front ends). `menu` only when a fresh live file says menu; `mod_off` = ONI Companion Link is switched off in the running game; `mod_crashed` = mods.json shows the game turned it off after a crash." },
+        "message": { "type": "string", "description": "F1. The sentence to show for `cause`, from the core (every front end shows the same words)." },
+        "queued": { "type": "boolean", "description": "A sync was asked for while canStart was false; the core sends it by itself once a colony runs with the mod. Absent = nothing queued." },
+        "done": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 },
+        "current": { "type": ["string", "null"], "description": "Display text of the item being drawn, e.g. \"building: SynthWidget\"." },
+        "errors": { "type": "integer", "minimum": 0 },
+        "lastError": { "type": "string" },
+        "fonts": { "enum": ["none", "partial", "ready"], "description": "State of the fonts the core extracted / the mod exported." },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "elapsedMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "SyncPost": {
+      "description": "v1.2. Body of POST /sync; writes a sync_assets command. When canStart is false the sync is queued (reply: queued true) and sent once the game can take it; {\"cancel\": true} drops a queued sync. A request while a sync is running returns the running Sync unchanged.",
+      "type": "object", "additionalProperties": false,
+      "properties": { "scope": { "enum": ["full", "missing"], "description": "Default: suggestedScope, else full." },
+                      "cancel": { "const": true, "description": "Drop a queued sync." } }
+    },
+    "FontList": {
+      "description": "v1.2. GET /fonts: the fonts the core has for this game build, extracted from the user's own game (never shipped). `GET /fonts/<name>` serves the file: ttf as font/ttf, sdfAtlas image as image/png, table as application/json (errors stay JSON). Empty list = not synced yet; front ends use their fallbacks.",
+      "type": "object", "required": ["fonts"], "additionalProperties": false,
+      "properties": {
+        "build": { "type": "integer" },
+        "fonts": { "type": "array", "items": { "$ref": "#/$defs/FontEntry" } }
+      }
+    },
+    "FontEntry": {
+      "type": "object", "required": ["name", "family", "kind", "url"], "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$", "description": "Id in /fonts/<name>." },
+        "family": { "type": "string" },
+        "style": { "enum": ["regular", "bold", "italic", "boldItalic"] },
+        "kind": { "enum": ["ttf", "sdfAtlasImage", "sdfAtlasTable"], "description": "ttf = a TrueType font file. sdfAtlasImage + sdfAtlasTable = the two files of one TextMeshPro SDF atlas (table schema: font-atlas.schema.json); they share `family`." },
+        "url": { "type": "string", "pattern": "^/api/v1/fonts/[A-Za-z0-9_.-]+$" },
+        "size": { "type": "integer", "minimum": 1 },
+        "roles": { "type": "array", "items": { "enum": ["body", "header", "title"] }, "description": "Roles the game uses it for." },
+        "license": { "type": "string", "description": "Short license note when known (SIL OFL for Economica / League Spartan)." }
+      }
+    },
+    "SettingsPost": {
+      "description": "v1.1. Body of POST /settings. Same shape as ToolPost; unknown names are ignored. The reply is the settings Screen.",
+      "type": "object", "required": ["values"], "additionalProperties": false,
+      "properties": { "values": { "type": "object", "additionalProperties": false,
+        "properties": { "zoomToDupeOnSelect": { "type": "boolean" } } } }
+    },
+    "Identity": {
+      "description": "v1.4. GET /identity (network and loopback listener, no token). Who this service is. Labels only: the fingerprint is the real identity and is proven by the TLS certificate, not by this body.",
+      "type": "object", "required": ["instanceId", "name", "fingerprint", "fingerprintTag", "apiVersion", "coreVersion"], "additionalProperties": false,
+      "properties": {
+        "instanceId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$", "description": "Random UUID v4, made on first start, kept until Reset identity." },
+        "name": { "type": "string", "pattern": "^[a-z]{2,20}-[a-z]{2,20}$", "description": "adjective-animal, random, kept until Reset identity. Never the colony or a person." },
+        "fingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "SHA-256 of the DER certificate, lowercase hex." },
+        "fingerprintTag": { "type": "string", "pattern": "^[0-9A-F]{4}$", "description": "First 4 hex digits of the fingerprint, uppercase, for lists (\"spiffy-raccoon 7F3A\")." },
+        "apiVersion": { "const": 1 },
+        "coreVersion": { "type": "string" }
+      }
+    },
+    "ConnectAddress": {
+      "type": "object", "required": ["address", "kind"], "additionalProperties": false,
+      "properties": { "address": { "type": "string", "description": "IPv4 or IPv6 literal, or a Tailscale MagicDNS name." }, "kind": { "enum": ["lan", "tailscale"] } }
+    },
+    "PairingCode": {
+      "type": "object", "required": ["display", "expiresAt", "failuresLeft"], "additionalProperties": false,
+      "properties": {
+        "display": { "type": "string", "pattern": "^[A-HJKMNP-Z2-9]{4}-[A-HJKMNP-Z2-9]{4}$", "description": "8 characters from ABCDEFGHJKMNPQRSTUVWXYZ23456789, shown with a dash. Compared without the dash, case-insensitive." },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "UTC. Valid 300 s from creation. Single use." },
+        "failuresLeft": { "type": "integer", "minimum": 0, "maximum": 5, "description": "Wrong tries left for the most-failed source; at 0 that source is blocked until the code ends." }
+      }
+    },
+    "PairedDevice": {
+      "type": "object", "required": ["deviceId", "label", "pairedAt", "lastSeen", "transport"], "additionalProperties": false,
+      "properties": {
+        "deviceId": { "type": "string", "pattern": "^d-[0-9a-f]{12}$", "description": "Random, made at pairing. Not the token." },
+        "label": { "type": "string", "minLength": 1, "maxLength": 40, "description": "Chosen by the companion device (e.g. its model name); untrusted text, shown as plain text." },
+        "platform": { "enum": ["android", "ios", "web", "other"] },
+        "pairedAt": { "type": "string", "format": "date-time" },
+        "lastSeen": { "type": ["string", "null"], "description": "UTC date-time of the last authorized request, null if none yet." },
+        "transport": { "enum": ["tls", "http"], "description": "How it paired. http = the iOS plain-HTTP choice (token readable on the LAN)." }
+      }
+    },
+    "ConnectState": {
+      "description": "v1.4. GET /connect (loopback only). Same content as companion/pairing/state.json minus the file fields.",
+      "type": "object", "required": ["enabled", "plainHttp", "identity", "addresses", "devices"], "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "description": "The Connect a phone switch. Default false after every install and after Reset identity." },
+        "listening": { "type": "boolean", "description": "True while the network listener (TLS) is open." },
+        "port": { "type": ["integer", "null"], "description": "TLS port while listening, else null." },
+        "plainHttp": { "type": "boolean", "description": "The iOS plain-HTTP switch, default false. When true, a second plain-HTTP listener is open on plainHttpPort." },
+        "plainHttpPort": { "type": ["integer", "null"] },
+        "identity": { "$ref": "#/$defs/Identity" },
+        "addresses": { "type": "array", "items": { "$ref": "#/$defs/ConnectAddress" } },
+        "code": { "oneOf": [ { "$ref": "#/$defs/PairingCode" }, { "type": "null" } ], "description": "Null while the switch is off." },
+        "qrText": { "type": ["string", "null"], "description": "The exact text to encode in the QR code (pairing.schema.json QrPayload as compact JSON). Null while off." },
+        "devices": { "type": "array", "items": { "$ref": "#/$defs/PairedDevice" } },
+        "plainHttpNote": { "type": ["string", "null"], "description": "One line for the window when a plain-HTTP device is paired or the switch is on; null otherwise." }
+      }
+    },
+    "ConnectSwitchPost": {
+      "description": "v1.4. Body of POST /connect/switch and POST /connect/plain-http (loopback only). Reply: ConnectState.",
+      "type": "object", "required": ["enabled"], "additionalProperties": false,
+      "properties": { "enabled": { "type": "boolean" } }
+    },
+    "ClaimPost": {
+      "description": "v1.4. Body of POST /connect/claim (network listener, no token, rate limited): the one-time code for a device token.",
+      "type": "object", "required": ["code", "label"], "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "minLength": 8, "maxLength": 9, "description": "With or without the dash, any case." },
+        "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "platform": { "enum": ["android", "ios", "web", "other"] }
+      }
+    },
+    "ClaimReply": {
+      "description": "v1.4. Reply of a good POST /connect/claim. The only time the token is shown; the core keeps only its SHA-256.",
+      "type": "object", "required": ["deviceToken", "deviceId", "identity"], "additionalProperties": false,
+      "properties": {
+        "deviceToken": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$", "description": "32 random bytes, base64url without padding. Sent as header X-Oni-Device on every later request, only inside TLS to the pinned fingerprint." },
+        "deviceId": { "type": "string", "pattern": "^d-[0-9a-f]{12}$" },
+        "identity": { "$ref": "#/$defs/Identity" }
+      }
+    },
+    "ConnectDevices": {
+      "description": "v1.4. GET /connect/devices (loopback only).",
+      "type": "object", "required": ["devices"], "additionalProperties": false,
+      "properties": { "devices": { "type": "array", "items": { "$ref": "#/$defs/PairedDevice" } } }
+    },
+    "ConnectDone": {
+      "description": "v1.4. Reply of DELETE /connect/devices/<deviceId>, POST /connect/code and POST /connect/reset-identity (loopback only). The new state follows as a connect event.",
+      "type": "object", "required": ["ok"], "additionalProperties": false,
+      "properties": { "ok": { "const": true }, "removed": { "type": "integer", "minimum": 0, "description": "Devices unpaired (reset-identity: all of them)." } }
+    },
+    "Planned": {
+      "description": "NOT IN V1. Pairing, for the Android/iOS standalone mode. Listed so lanes do not clash with the names.",
+      "type": "object", "required": ["note"], "properties": { "note": { "type": "string" } }
+    }
+  }
+}

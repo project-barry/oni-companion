@@ -1,0 +1,5 @@
+build/
+tests/JsonSample/bin/
+tests/JsonSample/obj/
+dist-out/
+build-linux/

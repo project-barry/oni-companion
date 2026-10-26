@@ -1,0 +1,16 @@
+[
+ {"resize":[1240,1800]},{"wait":800},{"shot":"20-colony"},
+ {"click":"card-Bo"},{"wait":600},{"shot":"21-dupe-bo"},
+ {"click":"action-focus"},{"wait":200},{"shot":"22-sent"},
+ {"wait":1200},{"shot":"23-done"},
+ {"call":"pop"},{"wait":300},
+ {"click":"tab1"},{"wait":600},{"shot":"24-resources"},
+ {"click":"filterField"},{"type":"bar"},{"wait":300},{"shot":"25-filter"},
+ {"click":"world1"},{"wait":600},{"shot":"26-world2"},
+ {"click":"tab4"},{"wait":600},{"shot":"27-settings"},
+ {"click":"toggle-zoomToDupeOnSelect"},{"click":"submitButton"},{"wait":900},{"shot":"28-settings-on"},
+ {"click":"tab0"},{"wait":500},{"click":"card-Ada"},{"wait":1500},{"shot":"29-dupe-ada-onopen"},
+ {"call":"pop"},{"wait":300},{"click":"card-Ada"},{"wait":800},
+ {"call":"openRef","args":[{"kind":"dupe","id":"menu"}]},{"wait":300},
+ {"shot":"30-end"}
+]

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Offline check of the mod's PNG encoder and pixel helpers (src/Art.cs, class PngCodec) on a normal .NET runtime. -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>disable</ImplicitUsings></PropertyGroup>
+  
+</Project>

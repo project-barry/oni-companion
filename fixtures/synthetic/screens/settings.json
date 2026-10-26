@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "title": "Settings",
+  "source": "none",
+  "refreshOn": [
+    "settings"
+  ],
+  "blocks": [
+    {
+      "type": "form",
+      "tool": "settings",
+      "endpoint": "/settings",
+      "title": "Colony",
+      "submitLabel": "Save",
+      "fields": [
+        {
+          "kind": "toggle",
+          "name": "zoomToDupeOnSelect",
+          "label": "Zoom to duplicant when selected",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "title": "Status",
+      "rows": [
+        {
+          "label": "Game",
+          "value": "Found"
+        },
+        {
+          "label": "Mod",
+          "value": "0.2.0"
+        }
+      ]
+    }
+  ]
+}

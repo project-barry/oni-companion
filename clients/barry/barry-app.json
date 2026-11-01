@@ -3,6 +3,7 @@
   "id": "io.github.project-barry.oni-companion",
   "name": "ONI Companion",
   "version": "0.2.0",
+  "minApi": 2,
   "main": "main.qml",
   "service": "service.py",
   "icon": "icon.svg",

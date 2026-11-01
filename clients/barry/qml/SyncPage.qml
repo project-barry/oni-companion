@@ -3,6 +3,7 @@
 // app.syncInfo; this file only lays them out. The user may leave (Hide): the sync keeps running in the game, and a chip in
 // the header brings this screen back.
 import QtQuick
+import Barry.Input
 
 Item {
     id: sp
@@ -43,124 +44,127 @@ Item {
     Rectangle { anchors.fill: parent; color: sp.app.theme.bg }
     TapHandler { }                                   // nothing behind the screen can be tapped
 
-    Flickable {
+    TouchScroll {   // Barry's touch rules scroll it (Barry.Input)
         anchors { fill: parent; margins: 32 * sp.s }
-        contentHeight: col.implicitHeight
-        clip: true
-        Column {
-            id: col
-            width: parent.width
-            spacing: 28 * sp.s
-            Text {
+        Flickable {
+            anchors.fill: parent
+            contentHeight: col.implicitHeight
+            clip: true
+            Column {
+                id: col
                 width: parent.width
-                wrapMode: Text.Wrap
-                text: sp.headline
-                color: sp.app.theme.pageText
-                font { family: sp.app.theme.font; pixelSize: Math.round(sp.app.theme.body * 1.2); weight: Font.Bold }
-            }
-            Text {
-                width: parent.width
-                wrapMode: Text.Wrap
-                text: sp.explain
-                color: sp.app.theme.muted
-                font { family: sp.app.theme.font; pixelSize: sp.app.theme.body }
-            }
-            Rectangle {   // the game is not running with the mod and a colony
-                visible: !sp.running && !sp.canStart && !sp.queued
-                objectName: "syncStartGame"
-                width: parent.width
-                implicitHeight: sg.implicitHeight + 40 * sp.s
-                height: implicitHeight
-                radius: sp.app.theme.radius
-                color: Qt.rgba(sp.app.theme.warn.r, sp.app.theme.warn.g, sp.app.theme.warn.b, 0.14)
-                border.color: sp.app.theme.warn
-                border.width: Math.max(1, 2 * sp.s)
-                Column {
-                    id: sg
-                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 24 * sp.s }
-                    spacing: 6 * sp.s
-                    Text {
-                        width: parent.width
-                        wrapMode: Text.Wrap
-                        text: "No colony is running yet"
-                        color: sp.app.theme.warn
-                        font { family: sp.app.theme.font; pixelSize: sp.app.theme.body; weight: Font.Bold }
-                    }
-                    Text {
-                        width: parent.width
-                        wrapMode: Text.Wrap
-                        text: sp.info.message ? sp.info.message + " Tap Start sync now: it begins when a colony is running." : sp.info.reason === "menu" ? "The game is at its menu. Tap Start sync now: it begins when you load a colony."
-                                                        : "Tap Start sync now: it begins when you start the game with the ONI Companion Link mod on and load a colony."
-                        color: sp.app.theme.pageText
-                        font { family: sp.app.theme.font; pixelSize: sp.app.theme.small + 2 }
+                spacing: 28 * sp.s
+                Text {
+                    width: parent.width
+                    wrapMode: Text.Wrap
+                    text: sp.headline
+                    color: sp.app.theme.pageText
+                    font { family: sp.app.theme.font; pixelSize: Math.round(sp.app.theme.body * 1.2); weight: Font.Bold }
+                }
+                Text {
+                    width: parent.width
+                    wrapMode: Text.Wrap
+                    text: sp.explain
+                    color: sp.app.theme.muted
+                    font { family: sp.app.theme.font; pixelSize: sp.app.theme.body }
+                }
+                Rectangle {   // the game is not running with the mod and a colony
+                    visible: !sp.running && !sp.canStart && !sp.queued
+                    objectName: "syncStartGame"
+                    width: parent.width
+                    implicitHeight: sg.implicitHeight + 40 * sp.s
+                    height: implicitHeight
+                    radius: sp.app.theme.radius
+                    color: Qt.rgba(sp.app.theme.warn.r, sp.app.theme.warn.g, sp.app.theme.warn.b, 0.14)
+                    border.color: sp.app.theme.warn
+                    border.width: Math.max(1, 2 * sp.s)
+                    Column {
+                        id: sg
+                        anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 24 * sp.s }
+                        spacing: 6 * sp.s
+                        Text {
+                            width: parent.width
+                            wrapMode: Text.Wrap
+                            text: "No colony is running yet"
+                            color: sp.app.theme.warn
+                            font { family: sp.app.theme.font; pixelSize: sp.app.theme.body; weight: Font.Bold }
+                        }
+                        Text {
+                            width: parent.width
+                            wrapMode: Text.Wrap
+                            text: sp.info.message ? sp.info.message + " Tap Start sync now: it begins when a colony is running." : sp.info.reason === "menu" ? "The game is at its menu. Tap Start sync now: it begins when you load a colony."
+                                                            : "Tap Start sync now: it begins when you start the game with the ONI Companion Link mod on and load a colony."
+                            color: sp.app.theme.pageText
+                            font { family: sp.app.theme.font; pixelSize: sp.app.theme.small + 2 }
+                        }
                     }
                 }
-            }
-            Column {   // progress: the item being drawn, the count, a bar
-                visible: sp.running && sp.info.total > 0
-                objectName: "syncProgress"
-                width: parent.width
-                spacing: 8 * sp.s
-                Row {
+                Column {   // progress: the item being drawn, the count, a bar
+                    visible: sp.running && sp.info.total > 0
+                    objectName: "syncProgress"
                     width: parent.width
-                    Text {
-                        width: parent.width - cnt.implicitWidth
-                        elide: Text.ElideRight
-                        text: sp.info.current || ""
-                        color: sp.app.theme.muted
-                        font { family: sp.app.theme.font; pixelSize: sp.app.theme.small }
+                    spacing: 8 * sp.s
+                    Row {
+                        width: parent.width
+                        Text {
+                            width: parent.width - cnt.implicitWidth
+                            elide: Text.ElideRight
+                            text: sp.info.current || ""
+                            color: sp.app.theme.muted
+                            font { family: sp.app.theme.font; pixelSize: sp.app.theme.small }
+                        }
+                        Text {
+                            id: cnt
+                            objectName: "syncCount"
+                            text: sp.num(sp.info.done) + " / " + sp.num(sp.info.total)
+                            color: sp.app.theme.pageText
+                            font { family: sp.app.theme.font; pixelSize: sp.app.theme.body; weight: Font.DemiBold }
+                        }
                     }
-                    Text {
-                        id: cnt
-                        objectName: "syncCount"
-                        text: sp.num(sp.info.done) + " / " + sp.num(sp.info.total)
-                        color: sp.app.theme.pageText
-                        font { family: sp.app.theme.font; pixelSize: sp.app.theme.body; weight: Font.DemiBold }
-                    }
-                }
-                Rectangle {
-                    width: parent.width
-                    height: 16 * sp.s
-                    radius: height / 2
-                    color: sp.app.theme.progressTrack
                     Rectangle {
-                        width: parent.width * Math.max(0, Math.min(1, (sp.info.done || 0) / Math.max(1, sp.info.total || 1)))
-                        height: parent.height
-                        radius: parent.radius
-                        color: sp.app.theme.progressFill
+                        width: parent.width
+                        height: 16 * sp.s
+                        radius: height / 2
+                        color: sp.app.theme.progressTrack
+                        Rectangle {
+                            width: parent.width * Math.max(0, Math.min(1, (sp.info.done || 0) / Math.max(1, sp.info.total || 1)))
+                            height: parent.height
+                            radius: parent.radius
+                            color: sp.app.theme.progressFill
+                        }
                     }
                 }
-            }
-            Text {
-                visible: sp.running && sp.info.errors > 0
-                width: parent.width
-                wrapMode: Text.Wrap
-                text: sp.info.errors + " could not be drawn" + (sp.info.lastError ? ": " + sp.info.lastError : "")
-                color: sp.app.theme.warn
-                font { family: sp.app.theme.font; pixelSize: sp.app.theme.small + 2 }
-            }
-            Row {
-                spacing: 20 * sp.s
-                Btn {
-                    visible: !sp.running && !sp.queued
-                    objectName: "syncStart"
-                    app: sp.app
-                    primary: true
-                    label: sp.state === "failed" ? "Try again" : sp.state === "done" && !sp.info.needed ? "Sync again" : "Start sync"
-                    onTapped: sp.app.startSync(sp.app.syncScope)
+                Text {
+                    visible: sp.running && sp.info.errors > 0
+                    width: parent.width
+                    wrapMode: Text.Wrap
+                    text: sp.info.errors + " could not be drawn" + (sp.info.lastError ? ": " + sp.info.lastError : "")
+                    color: sp.app.theme.warn
+                    font { family: sp.app.theme.font; pixelSize: sp.app.theme.small + 2 }
                 }
-                Btn {
-                    objectName: "syncHide"
-                    app: sp.app
-                    label: sp.running || sp.queued ? "Hide" : sp.state === "done" && !sp.info.needed ? "Close" : "Not now"
-                    onTapped: sp.app.syncOpen = false
-                }
-                Btn {
-                    visible: sp.queued
-                    objectName: "syncCancel"
-                    app: sp.app
-                    label: "Cancel sync"
-                    onTapped: sp.app.cancelSync()
+                Row {
+                    spacing: 20 * sp.s
+                    Btn {
+                        visible: !sp.running && !sp.queued
+                        objectName: "syncStart"
+                        app: sp.app
+                        primary: true
+                        label: sp.state === "failed" ? "Try again" : sp.state === "done" && !sp.info.needed ? "Sync again" : "Start sync"
+                        onTapped: sp.app.startSync(sp.app.syncScope)
+                    }
+                    Btn {
+                        objectName: "syncHide"
+                        app: sp.app
+                        label: sp.running || sp.queued ? "Hide" : sp.state === "done" && !sp.info.needed ? "Close" : "Not now"
+                        onTapped: sp.app.syncOpen = false
+                    }
+                    Btn {
+                        visible: sp.queued
+                        objectName: "syncCancel"
+                        app: sp.app
+                        label: "Cancel sync"
+                        onTapped: sp.app.cancelSync()
+                    }
                 }
             }
         }

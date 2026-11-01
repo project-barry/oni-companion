@@ -1,5 +1,6 @@
 // Look-up tab: a search box; with no text, the kinds; with text, ranked results.
 import QtQuick
+import Barry.Input
 
 Item {
     id: p
@@ -57,66 +58,69 @@ Item {
         onAccepted: p.doSearch()
     }
 
-    Flickable {
+    TouchScroll {   // Barry's touch rules scroll it (Barry.Input)
         anchors { left: parent.left; right: parent.right; top: box.bottom; bottom: parent.bottom; topMargin: 24 * p.app.s }
-        contentHeight: list.implicitHeight + 80 * p.app.s
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
-        Column {
-            id: list
-            x: 32 * p.app.s
-            width: parent.width - 64 * p.app.s
-            spacing: 12 * p.app.s
-            Text {
-                visible: !!p.status
-                width: parent.width
-                wrapMode: Text.Wrap
-                horizontalAlignment: Text.AlignHCenter
-                topPadding: 30 * p.app.s
-                text: p.status
-                color: p.app.theme.muted
-                font { family: p.app.theme.font; pixelSize: p.app.theme.body }
-            }
-            Repeater {
-                model: box.text.trim() === "" ? p.kinds : []
-                delegate: NavRow {
-                    required property var modelData
-                    app: p.app
-                    width: list.width
-                    title: modelData.label || modelData.kind
-                    badge: String(modelData.count)
-                    onTapped: p.app.push({ "type": "screen", "path": "list/" + encodeURIComponent(modelData.kind) })
+        Flickable {
+            anchors.fill: parent
+            contentHeight: list.implicitHeight + 80 * p.app.s
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            Column {
+                id: list
+                x: 32 * p.app.s
+                width: parent.width - 64 * p.app.s
+                spacing: 12 * p.app.s
+                Text {
+                    visible: !!p.status
+                    width: parent.width
+                    wrapMode: Text.Wrap
+                    horizontalAlignment: Text.AlignHCenter
+                    topPadding: 30 * p.app.s
+                    text: p.status
+                    color: p.app.theme.muted
+                    font { family: p.app.theme.font; pixelSize: p.app.theme.body }
                 }
-            }
-            Text {
-                visible: box.text.trim() === "" && p.tools.length > 0
-                width: parent.width
-                topPadding: 16 * p.app.s
-                text: "Calculators"
-                color: p.app.theme.muted
-                font { family: p.app.theme.font; pixelSize: p.app.theme.small; weight: Font.DemiBold; capitalization: Font.AllUppercase }
-            }
-            Repeater {
-                model: box.text.trim() === "" ? p.tools : []
-                delegate: NavRow {
-                    required property var modelData
-                    app: p.app
-                    width: list.width
-                    title: modelData.title || modelData.id
-                    subtitle: modelData.summary || ""
-                    onTapped: p.app.push({ "type": "screen", "path": "tools/" + encodeURIComponent(modelData.id) })
+                Repeater {
+                    model: box.text.trim() === "" ? p.kinds : []
+                    delegate: NavRow {
+                        required property var modelData
+                        app: p.app
+                        width: list.width
+                        title: modelData.label || modelData.kind
+                        badge: String(modelData.count)
+                        onTapped: p.app.push({ "type": "screen", "path": "list/" + encodeURIComponent(modelData.kind) })
+                    }
                 }
-            }
-            Repeater {
-                model: box.text.trim() === "" ? [] : p.results
-                delegate: NavRow {
-                    required property var modelData
-                    app: p.app
-                    width: list.width
-                    title: modelData.name || modelData.id
-                    subtitle: (p.app.kindLabel(modelData.kind)) + (modelData.subtitle ? " - " + modelData.subtitle : "")
-                    badge: (modelData.dlc || []).join(", ")
-                    onTapped: p.app.openRef({ "kind": modelData.kind, "id": modelData.id })
+                Text {
+                    visible: box.text.trim() === "" && p.tools.length > 0
+                    width: parent.width
+                    topPadding: 16 * p.app.s
+                    text: "Calculators"
+                    color: p.app.theme.muted
+                    font { family: p.app.theme.font; pixelSize: p.app.theme.small; weight: Font.DemiBold; capitalization: Font.AllUppercase }
+                }
+                Repeater {
+                    model: box.text.trim() === "" ? p.tools : []
+                    delegate: NavRow {
+                        required property var modelData
+                        app: p.app
+                        width: list.width
+                        title: modelData.title || modelData.id
+                        subtitle: modelData.summary || ""
+                        onTapped: p.app.push({ "type": "screen", "path": "tools/" + encodeURIComponent(modelData.id) })
+                    }
+                }
+                Repeater {
+                    model: box.text.trim() === "" ? [] : p.results
+                    delegate: NavRow {
+                        required property var modelData
+                        app: p.app
+                        width: list.width
+                        title: modelData.name || modelData.id
+                        subtitle: (p.app.kindLabel(modelData.kind)) + (modelData.subtitle ? " - " + modelData.subtitle : "")
+                        badge: (modelData.dlc || []).join(", ")
+                        onTapped: p.app.openRef({ "kind": modelData.kind, "id": modelData.id })
+                    }
                 }
             }
         }

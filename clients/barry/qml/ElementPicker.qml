@@ -1,5 +1,6 @@
 // Overlay: pick an element by searching. Calls picked(id, name).
 import QtQuick
+import Barry.Input
 
 Rectangle {
     id: o
@@ -54,34 +55,37 @@ Rectangle {
         }
         Btn { id: cancel; app: o.app; label: "Cancel"; height: box.height; onTapped: o.cancelled() }
     }
-    Flickable {
+    TouchScroll {   // Barry's touch rules scroll it (Barry.Input)
         anchors { left: parent.left; right: parent.right; top: top.bottom; bottom: parent.bottom; topMargin: 20 * o.app.s }
-        contentHeight: col.implicitHeight + 60 * o.app.s
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
-        Column {
-            id: col
-            x: 32 * o.app.s
-            width: parent.width - 64 * o.app.s
-            spacing: 12 * o.app.s
-            Text {
-                visible: !!o.status
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                topPadding: 30 * o.app.s
-                text: o.status
-                color: o.app.theme.muted
-                font { family: o.app.theme.font; pixelSize: o.app.theme.body }
-            }
-            Repeater {
-                model: o.results
-                delegate: NavRow {
-                    required property var modelData
-                    app: o.app
-                    width: col.width
-                    title: modelData.name
-                    subtitle: modelData.subtitle
-                    onTapped: o.picked(modelData.id, modelData.name)
+        Flickable {
+            anchors.fill: parent
+            contentHeight: col.implicitHeight + 60 * o.app.s
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            Column {
+                id: col
+                x: 32 * o.app.s
+                width: parent.width - 64 * o.app.s
+                spacing: 12 * o.app.s
+                Text {
+                    visible: !!o.status
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    topPadding: 30 * o.app.s
+                    text: o.status
+                    color: o.app.theme.muted
+                    font { family: o.app.theme.font; pixelSize: o.app.theme.body }
+                }
+                Repeater {
+                    model: o.results
+                    delegate: NavRow {
+                        required property var modelData
+                        app: o.app
+                        width: col.width
+                        title: modelData.name
+                        subtitle: modelData.subtitle
+                        onTapped: o.picked(modelData.id, modelData.name)
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@
 // Pairing happens here, on the gaming device: a phone scans the code shown on this page.
 // Reads again when the core says "connect" changed (events), and after each of its own actions.
 import QtQuick
+import Barry.Input
 
 Item {
     id: p
@@ -66,224 +67,227 @@ Item {
         function onChanged(names) { if (names.indexOf("connect") >= 0) p.load() }
     }
 
-    Flickable {
-        id: scroll
+    TouchScroll {   // Barry's touch rules scroll it (Barry.Input)
         anchors.fill: parent
-        contentWidth: width
-        contentHeight: col.implicitHeight + 48 * p.s + 24 * p.s
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
+        Flickable {
+            id: scroll
+            anchors.fill: parent
+            contentWidth: width
+            contentHeight: col.implicitHeight + 48 * p.s + 24 * p.s
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
 
-        Column {
-            id: col
-            x: 24 * p.s
-            y: 24 * p.s
-            width: scroll.width - 48 * p.s
-            spacing: 24 * p.s
-
-            Text {   // the page's one-line failure (no state yet)
-                visible: p.failed && p.st === null
-                width: parent.width
-                wrapMode: Text.Wrap
-                text: p.error
-                color: p.app.theme.bad
-                font { family: p.app.theme.font; pixelSize: p.app.theme.body }
-            }
-            Text {
-                visible: p.st === null && !p.failed
-                text: "Loading..."
-                color: p.app.theme.muted
-                font { family: p.app.theme.font; pixelSize: p.app.theme.body }
-            }
-
-            ToggleRow {
-                id: mainSwitch
-                objectName: "connectSwitch"
-                visible: p.st !== null
-                app: p.app
-                label: "Connect a phone"
-                on: p.st ? p.st.enabled === true : false
-                sub: p.st === null ? "" : (p.st.enabled
-                     ? "On. Phones on this network or Tailscale can find this device and pair with it."
-                     : "Off. Nothing is shared. Turn it on to pair a phone.")
-                onTapped: p.change("switch", { "enabled": !p.st.enabled })
-            }
-
-            // ---- on: the name, the code, the addresses, the paired devices ----
             Column {
-                visible: p.st !== null && p.st.enabled === true
-                width: parent.width
+                id: col
+                x: 24 * p.s
+                y: 24 * p.s
+                width: scroll.width - 48 * p.s
                 spacing: 24 * p.s
 
-                Text {
-                    objectName: "connectName"
+                Text {   // the page's one-line failure (no state yet)
+                    visible: p.failed && p.st === null
                     width: parent.width
                     wrapMode: Text.Wrap
-                    text: p.st && p.st.identity ? p.st.identity.name : ""
-                    color: p.app.theme.pageText
-                    font { family: p.app.theme.headerFont; pixelSize: p.app.theme.body * 2; weight: Font.Bold }
+                    text: p.error
+                    color: p.app.theme.bad
+                    font { family: p.app.theme.font; pixelSize: p.app.theme.body }
                 }
                 Text {
-                    width: parent.width
-                    wrapMode: Text.Wrap
-                    text: "Find this name in your phone's list. Tag " + (p.st && p.st.identity ? p.st.identity.fingerprintTag : "") + " tells two devices with the same name apart."
+                    visible: p.st === null && !p.failed
+                    text: "Loading..."
                     color: p.app.theme.muted
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                    font { family: p.app.theme.font; pixelSize: p.app.theme.body }
                 }
 
-                // The QR code: the core draws it from the pairing text (GET /connect/qr.png).
-                Rectangle {
-                    visible: p.st !== null && p.st.code !== null
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: 360 * p.s + 32 * p.s; height: width
-                    color: "white"
-                    radius: 8 * p.s
-                    Image {
-                        objectName: "connectQr"
-                        anchors.centerIn: parent
-                        width: 360 * p.s; height: width
-                        sourceSize.width: 360 * p.s; sourceSize.height: 360 * p.s
-                        fillMode: Image.PreserveAspectFit
-                        smooth: false
-                        cache: false
-                        source: p.qrSource()
-                    }
-                }
-
-                Text {
-                    objectName: "connectCode"
-                    visible: p.st !== null && p.st.code !== null
-                    width: parent.width
-                    horizontalAlignment: Text.AlignHCenter
-                    text: p.st && p.st.code ? p.st.code.display : ""
-                    color: p.app.theme.pageText
-                    font { family: p.app.theme.headerFont; pixelSize: p.app.theme.body * 2.4; weight: Font.Bold; letterSpacing: 4 * p.s }
-                }
-                Text {
-                    visible: p.st !== null && p.st.code !== null
-                    width: parent.width
-                    horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    text: p.st && p.st.code ? "Scan the code with the app, or type the address. Valid until " + p.fmtTime(p.st.code.expiresAt) + ". Tries left: " + p.st.code.failuresLeft + "." : ""
-                    color: p.app.theme.muted
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
-                }
-                Btn {
-                    objectName: "newCodeButton"
-                    visible: p.st !== null && p.st.enabled === true
+                ToggleRow {
+                    id: mainSwitch
+                    objectName: "connectSwitch"
+                    visible: p.st !== null
                     app: p.app
-                    label: "New code"
-                    width: parent.width
-                    onTapped: p.change("code", {})
+                    label: "Connect a phone"
+                    on: p.st ? p.st.enabled === true : false
+                    sub: p.st === null ? "" : (p.st.enabled
+                         ? "On. Phones on this network or Tailscale can find this device and pair with it."
+                         : "Off. Nothing is shared. Turn it on to pair a phone.")
+                    onTapped: p.change("switch", { "enabled": !p.st.enabled })
                 }
 
-                Text {
+                // ---- on: the name, the code, the addresses, the paired devices ----
+                Column {
+                    visible: p.st !== null && p.st.enabled === true
                     width: parent.width
-                    text: "Addresses"
-                    color: p.app.theme.title
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
-                }
-                Repeater {
-                    model: p.st ? p.st.addresses : []
+                    spacing: 24 * p.s
+
+                    Text {
+                        objectName: "connectName"
+                        width: parent.width
+                        wrapMode: Text.Wrap
+                        text: p.st && p.st.identity ? p.st.identity.name : ""
+                        color: p.app.theme.pageText
+                        font { family: p.app.theme.headerFont; pixelSize: p.app.theme.body * 2; weight: Font.Bold }
+                    }
                     Text {
                         width: parent.width
-                        wrapMode: Text.WrapAnywhere
-                        text: p.kindText(modelData.kind) + ": " + modelData.address
+                        wrapMode: Text.Wrap
+                        text: "Find this name in your phone's list. Tag " + (p.st && p.st.identity ? p.st.identity.fingerprintTag : "") + " tells two devices with the same name apart."
+                        color: p.app.theme.muted
+                        font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                    }
+
+                    // The QR code: the core draws it from the pairing text (GET /connect/qr.png).
+                    Rectangle {
+                        visible: p.st !== null && p.st.code !== null
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: 360 * p.s + 32 * p.s; height: width
+                        color: "white"
+                        radius: 8 * p.s
+                        Image {
+                            objectName: "connectQr"
+                            anchors.centerIn: parent
+                            width: 360 * p.s; height: width
+                            sourceSize.width: 360 * p.s; sourceSize.height: 360 * p.s
+                            fillMode: Image.PreserveAspectFit
+                            smooth: false
+                            cache: false
+                            source: p.qrSource()
+                        }
+                    }
+
+                    Text {
+                        objectName: "connectCode"
+                        visible: p.st !== null && p.st.code !== null
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: p.st && p.st.code ? p.st.code.display : ""
                         color: p.app.theme.pageText
+                        font { family: p.app.theme.headerFont; pixelSize: p.app.theme.body * 2.4; weight: Font.Bold; letterSpacing: 4 * p.s }
+                    }
+                    Text {
+                        visible: p.st !== null && p.st.code !== null
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.Wrap
+                        text: p.st && p.st.code ? "Scan the code with the app, or type the address. Valid until " + p.fmtTime(p.st.code.expiresAt) + ". Tries left: " + p.st.code.failuresLeft + "." : ""
+                        color: p.app.theme.muted
+                        font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                    }
+                    Btn {
+                        objectName: "newCodeButton"
+                        visible: p.st !== null && p.st.enabled === true
+                        app: p.app
+                        label: "New code"
+                        width: parent.width
+                        onTapped: p.change("code", {})
+                    }
+
+                    Text {
+                        width: parent.width
+                        text: "Addresses"
+                        color: p.app.theme.title
+                        font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
+                    }
+                    Repeater {
+                        model: p.st ? p.st.addresses : []
+                        Text {
+                            width: parent.width
+                            wrapMode: Text.WrapAnywhere
+                            text: p.kindText(modelData.kind) + ": " + modelData.address
+                            color: p.app.theme.pageText
+                            font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                        }
+                    }
+
+                    Text {
+                        width: parent.width
+                        text: "Paired devices"
+                        color: p.app.theme.title
+                        font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
+                    }
+                    Text {
+                        visible: p.st !== null && p.st.devices.length === 0
+                        width: parent.width
+                        text: "No phone is paired yet."
+                        color: p.app.theme.muted
+                        font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                    }
+                    Repeater {
+                        model: p.st ? p.st.devices : []
+                        Rectangle {
+                            width: parent.width
+                            height: devCol.implicitHeight + 32 * p.s
+                            radius: p.app.theme.radius
+                            color: p.app.theme.panel
+                            border.color: p.app.theme.line
+                            border.width: Math.max(1, 2 * p.s)
+                            Column {
+                                id: devCol
+                                anchors { left: parent.left; right: removeBtn.left; verticalCenter: parent.verticalCenter; leftMargin: 24 * p.s; rightMargin: 16 * p.s }
+                                spacing: 4 * p.s
+                                Text {
+                                    width: parent.width
+                                    elide: Text.ElideRight
+                                    text: modelData.label
+                                    color: p.app.theme.pageText
+                                    font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
+                                }
+                                Text {
+                                    width: parent.width
+                                    wrapMode: Text.Wrap
+                                    text: p.platformText(modelData.platform) + ", " + p.fmtSeen(modelData.lastSeen)
+                                    color: p.app.theme.muted
+                                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                                }
+                                Text {
+                                    visible: modelData.transport === "http"
+                                    width: parent.width
+                                    wrapMode: Text.Wrap
+                                    text: "Plain HTTP: its token can be read on this Wi-Fi."
+                                    color: p.app.theme.warn
+                                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                                }
+                            }
+                            Btn {
+                                id: removeBtn
+                                objectName: "removeDevice-" + modelData.deviceId
+                                app: p.app
+                                label: "Remove"
+                                anchors { right: parent.right; rightMargin: 16 * p.s; verticalCenter: parent.verticalCenter }
+                                onTapped: p.removeDevice(modelData)
+                            }
+                        }
+                    }
+
+                    ToggleRow {
+                        objectName: "plainHttpSwitch"
+                        app: p.app
+                        label: "Allow iPhone over plain HTTP"
+                        sub: "Off by default. Safari cannot check this device's certificate on the local network: anyone on this Wi-Fi can read the phone's token. Tailscale is real HTTPS."
+                        subColor: p.app.theme.warn
+                        on: p.st ? p.st.plainHttp === true : false
+                        onTapped: p.change("plain-http", { "enabled": !p.st.plainHttp })
+                    }
+                    Text {
+                        visible: p.st !== null && !!p.st.plainHttpNote
+                        width: parent.width
+                        wrapMode: Text.Wrap
+                        text: p.st ? (p.st.plainHttpNote || "") : ""
+                        color: p.app.theme.warn
                         font { family: p.app.theme.font; pixelSize: p.app.theme.small }
                     }
                 }
 
-                Text {
-                    width: parent.width
-                    text: "Paired devices"
-                    color: p.app.theme.title
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
-                }
-                Text {
-                    visible: p.st !== null && p.st.devices.length === 0
-                    width: parent.width
-                    text: "No phone is paired yet."
-                    color: p.app.theme.muted
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
-                }
-                Repeater {
-                    model: p.st ? p.st.devices : []
-                    Rectangle {
-                        width: parent.width
-                        height: devCol.implicitHeight + 32 * p.s
-                        radius: p.app.theme.radius
-                        color: p.app.theme.panel
-                        border.color: p.app.theme.line
-                        border.width: Math.max(1, 2 * p.s)
-                        Column {
-                            id: devCol
-                            anchors { left: parent.left; right: removeBtn.left; verticalCenter: parent.verticalCenter; leftMargin: 24 * p.s; rightMargin: 16 * p.s }
-                            spacing: 4 * p.s
-                            Text {
-                                width: parent.width
-                                elide: Text.ElideRight
-                                text: modelData.label
-                                color: p.app.theme.pageText
-                                font { family: p.app.theme.font; pixelSize: p.app.theme.body; weight: Font.DemiBold }
-                            }
-                            Text {
-                                width: parent.width
-                                wrapMode: Text.Wrap
-                                text: p.platformText(modelData.platform) + ", " + p.fmtSeen(modelData.lastSeen)
-                                color: p.app.theme.muted
-                                font { family: p.app.theme.font; pixelSize: p.app.theme.small }
-                            }
-                            Text {
-                                visible: modelData.transport === "http"
-                                width: parent.width
-                                wrapMode: Text.Wrap
-                                text: "Plain HTTP: its token can be read on this Wi-Fi."
-                                color: p.app.theme.warn
-                                font { family: p.app.theme.font; pixelSize: p.app.theme.small }
-                            }
-                        }
-                        Btn {
-                            id: removeBtn
-                            objectName: "removeDevice-" + modelData.deviceId
-                            app: p.app
-                            label: "Remove"
-                            anchors { right: parent.right; rightMargin: 16 * p.s; verticalCenter: parent.verticalCenter }
-                            onTapped: p.removeDevice(modelData)
-                        }
-                    }
-                }
-
-                ToggleRow {
-                    objectName: "plainHttpSwitch"
+                Btn {
+                    objectName: "resetIdentityButton"
+                    visible: p.st !== null
                     app: p.app
-                    label: "Allow iPhone over plain HTTP"
-                    sub: "Off by default. Safari cannot check this device's certificate on the local network: anyone on this Wi-Fi can read the phone's token. Tailscale is real HTTPS."
-                    subColor: p.app.theme.warn
-                    on: p.st ? p.st.plainHttp === true : false
-                    onTapped: p.change("plain-http", { "enabled": !p.st.plainHttp })
-                }
-                Text {
-                    visible: p.st !== null && !!p.st.plainHttpNote
+                    label: "Reset identity"
                     width: parent.width
-                    wrapMode: Text.Wrap
-                    text: p.st ? (p.st.plainHttpNote || "") : ""
-                    color: p.app.theme.warn
-                    font { family: p.app.theme.font; pixelSize: p.app.theme.small }
+                    onTapped: p.app.ask("Reset identity? Every paired phone must pair again, and Connect a phone turns off.", function() {
+                        p.change("reset-identity", {})
+                    })
                 }
+                Item { width: 1; height: 24 * p.s }
             }
-
-            Btn {
-                objectName: "resetIdentityButton"
-                visible: p.st !== null
-                app: p.app
-                label: "Reset identity"
-                width: parent.width
-                onTapped: p.app.ask("Reset identity? Every paired phone must pair again, and Connect a phone turns off.", function() {
-                    p.change("reset-identity", {})
-                })
-            }
-            Item { width: 1; height: 24 * p.s }
         }
     }
 }

@@ -104,5 +104,5 @@ file headers name the source and its license.
 
 ## App icon
 
-- `clients/barry/icon.svg` is original art made for this project. It does
+- `clients/barry/icon-symbolic.svg` (the letters ONI) is original art made for this project. It does
   not use the game's logo.

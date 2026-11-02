@@ -13,7 +13,7 @@ STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
 APP="$STAGE/oni-companion"
 mkdir -p "$APP"
-cp "$HERE/barry-app.json" "$HERE/main.qml" "$HERE/service.py" "$HERE/icon.svg" "$APP/"
+cp "$HERE/barry-app.json" "$HERE/main.qml" "$HERE/service.py" "$HERE/icon-symbolic.svg" "$APP/"
 cp -R "$HERE/qml" "$APP/qml"
 cp -R "$REPO/core/oni_companion" "$APP/oni_companion"
 # v1.3: the built game mod (our own code, no Klei content) travels inside the app so it can offer "Install the game mod".

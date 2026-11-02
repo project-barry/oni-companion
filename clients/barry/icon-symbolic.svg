@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 128 128" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+  <!-- "ONI" in a rounded, slanted lettering with a core in the O and a
+       ground line: drawn for this app in one color, so Barry Launcher's
+       theme tints it. -->
+  <g transform="translate(64 60) skewX(-12) translate(-62 -60)">
+    <ellipse cx="28" cy="58" rx="17" ry="21"/>
+    <circle cx="28" cy="58" r="4.5" fill="#ffffff" stroke="none"/>
+    <path d="M56 79 V37 L80 79 V37"/>
+    <path d="M100 37 V79 M92 37 H108 M92 79 H108"/>
+  </g>
+  <path d="M20 98 H108" stroke-width="5"/>
+</svg>

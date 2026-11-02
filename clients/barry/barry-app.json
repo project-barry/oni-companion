@@ -6,7 +6,7 @@
   "minApi": 2,
   "main": "main.qml",
   "service": "service.py",
-  "icon": "icon.svg",
+  "icon": "icon-symbolic.svg",
   "keepAwake": true,
   "description": "Look-ups, calculators and your live colony for Oxygen Not Included. Not affiliated with Klei Entertainment.",
   "author": "Project Barry"
